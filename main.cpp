@@ -11,16 +11,19 @@ int main() {
   LinkStrategy mapa(modulo_hash);
   mapa.insert(120, L"KAŹMIERZ");
   mapa.insert(69, L"EUSTACHY");
-  mapa.insert(420, L"ZAŻÓŁĆ GĘŚLĄ JAŹŃ");
-  mapa.insert(420, L"secs");
+  mapa.insert(420, L"ESUTACHY");
+  mapa.insert(120, L"secs");
 
   // ISTNIEJĄCE
   int elo = mapa.search(L"EUSTACHY");
   std::cout << "POZYCJA: " << elo << std::endl;
-  std::cout << "JEST " << mapa.get_val(L"EUSTACHY") << " EUSTACHÓW" << std::endl;
-  elo = mapa.search(L"secs");
+  int ilosc = mapa.get_val(L"EUSTACHY");
+  std::cout << "JEST " << ilosc << " EUSTACHÓW" << std::endl;
+  elo = mapa.search(L"ESUTACHY");
   std::cout << "POZYCJA: " << elo << std::endl;
-  std::cout << "JEST " << mapa.get_val(L"secs") << " secsów" << std::endl;
+  ilosc = mapa.get_val(L"ESUTACHY");
+  std::cout << "JEST " << ilosc << " ESUTACHÓW" << std::endl;
+  
   // NIEISTNIEJĄCY
   try {
     elo = mapa.search(L"Arrur");
@@ -28,9 +31,9 @@ int main() {
   } catch (const std::out_of_range& err){
     std::cout << "Błąd: " << err.what() << std::endl;
   }
-
   try {
-    std::cout << "JEST " << mapa.get_val(L"Arrur") << " Arrurów" << std::endl;
+    ilosc = mapa.get_val(L"Arrur");
+    std::cout << "JEST " << ilosc << " Arrurów" << std::endl;
   } catch (const std::out_of_range& err){
     std::cout << "Błąd: " << err.what() << std::endl;
   }

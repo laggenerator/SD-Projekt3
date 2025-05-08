@@ -5,7 +5,6 @@
 #include "list.hh"
 #include <stdexcept>
 
-int pojemnosc = 1e6;
 
 //klasa wirtualna, po ktorej dziedzicza strategie rozne trzy
 //nastepnie dawana jako argument do konstruktora HashMap
@@ -72,19 +71,20 @@ class LinkStrategy : public HashMapStrategy {
     unsigned int idk = hash_fun(klucz);
     if(idk >= dane.size()) throw std::out_of_range("Nie ma takiego klucza w zbiorze!");
     auto &lista = dane[idk];
+    if(lista.get_size() == 0) throw std::out_of_range("Nie ma takiego klucza w zbiorze!");
     size_t idx = search(klucz);
-    if(idx < lista.get_size()){
+    if((idx < lista.get_size())){
       return lista.at_position(idx)->value().get_key();
     }
   }
-
+  
   virtual size_t search(wchar_t* klucz){
     unsigned int idk = hash_fun(klucz);
     if(idk >= dane.size()) throw std::out_of_range("Nie ma takiego klucza w zbiorze!");
     auto &lista = dane[idk];
+    if(lista.get_size() == 0) throw std::out_of_range("Przeszukiwany kubełek jest pusty!");
     Pair dummy(0, klucz);
     return lista.find_index(dummy);
-    // return i;
   }  
 
   void _show() const { dane._show(); };
@@ -107,9 +107,10 @@ unsigned int hash1(const wchar_t tab[VAL_SIZE]) {
 
 unsigned int modulo_hash(const wchar_t tab[VAL_SIZE]){
   const unsigned int p = 31; // Internet jej lubi używać nie wiem czemu
+  const unsigned int duze_modulo = 1e6;
   unsigned int hash = 0;
   for(int i=0;i<VAL_SIZE;i++){
-    hash = (hash + (tab[i] % pojemnosc)) % pojemnosc;
+    hash = (hash + (tab[i] % p)) % duze_modulo;
   }
   return hash;
 }
