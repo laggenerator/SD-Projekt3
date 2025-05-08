@@ -3,7 +3,7 @@
 #include <cstring>
 #include <ostream>
 
-#define VAL_SIZE 20
+#define VAL_SIZE 21
 
 class Pair {
   int key;
@@ -27,22 +27,16 @@ public:
 
   //operatory dzialające na wartościach klucza
   bool operator==(const Pair& p) const {
-    return (key == p.key);
+    return (val == p.val);
   }
   bool operator!=(const Pair& p) const {
-    return (key != p.key);
-  }
-  bool operator==(const int i) const {
-    return (key == i);
-  }
-  bool operator!=(const int i) const {
-    return (key != i);
+    return (val != p.val);
   }
   bool operator<(const Pair& p) const {
-    return (key < p.key);
+    return (val < p.val);
   }
   bool operator>(const Pair& p) const {
-    return (key > p.key);
+    return (val > p.val);
   }
   bool operator<=(const Pair& p) const {
     return !(*this > p);

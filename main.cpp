@@ -8,10 +8,16 @@
 
 int main() {
   std::setlocale(LC_ALL, "en_US.utf8"); //dzialaaaaa dziala dziala dziala
-  LinkStrategy mapa(hash1);
+  LinkStrategy mapa(modulo_hash);
   mapa.insert(120, L"KAŹMIERZ");
-  mapa.insert(120, L"EUSTACHY");
-  mapa.insert(120, L"ZAŻÓŁĆ GĘŚLĄ JAŹŃ");
-  mapa._show();
+  mapa.insert(69, L"EUSTACHY");
+  mapa.insert(420, L"ZAŻÓŁĆ GĘŚLĄ JAŹŃ");
+  mapa.insert(420, L"secs");
+
+  // mapa._show();
+  int elo = mapa.search(L"EUSTACHY");
+  std::cout << "POZYCJA: " << elo << std::endl;
+  std::cout << "JEST " << mapa.get_val(L"EUSTACHY") << " EUSTACHÓW" << std::endl;
+  std::cout << "JEST " << mapa.get_val(L"sigma") << " secsów" << std::endl;
   return 0;
 }

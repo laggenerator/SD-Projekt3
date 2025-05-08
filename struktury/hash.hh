@@ -3,6 +3,7 @@
 #include "pair.hh"
 #include "dynamic_array.hh"
 #include "list.hh"
+#include <stdexcept>
 
 int pojemnosc = 1e6;
 
@@ -14,6 +15,9 @@ public:
   virtual bool insert(int val, const wchar_t* key) = 0;
   virtual bool insert(Pair p) = 0;
   virtual bool remove(wchar_t* klucz) = 0;
+  virtual unsigned int get_val(wchar_t* klucz) = 0;
+  virtual size_t search(wchar_t* klucz) = 0;
+
 
   virtual void _show() const = 0;
   virtual size_t size() const = 0;
@@ -23,32 +27,61 @@ public:
 //dodaje na koniec listy 
 class LinkStrategy : public HashMapStrategy {
   unsigned int (*hash_fun)(const wchar_t[VAL_SIZE]);
-  DynamicArray<List<int>> dane;
+  DynamicArray<List<Pair>> dane;
   public:
   //pojawia sie potrzeba zainicjalizowania poczatkowo tablicy dynamicznej, np do 1000
   LinkStrategy(unsigned int (*h)(const wchar_t[VAL_SIZE])) {
     hash_fun = h;
-    for(int i = 0; i < pojemnosc; i++) {
-      List<int> l0;
+    for(int i = 0; i < 2; i++) {
+      List<Pair> l0;
       dane.push_back(l0);
     }
   };
   ~LinkStrategy() {}
   bool insert(const int val, const wchar_t* key) {
-    dane[hash_fun(key)].push_back(val);
+    unsigned int klucz = hash_fun(key);
+    size_t rozmiar = dane.size();
+    if(klucz > dane.size() -1){
+      dane.resize(klucz+1);
+
+      for(size_t i=rozmiar;i<=klucz;i++){
+        List<Pair> l0;
+        dane.push_back(l0);
+      }
+    }
+
+    Pair p(val, key);
+    dane[klucz].push_back(p);
+    // std::cout << "Wstawiam ziutka: " << klucz << std::endl;
     return true; //nie moze sie nie udac :)
   }
   bool insert(Pair p) {
     return insert(p.get_key(), p.get_val());
   }
   bool remove(wchar_t* klucz) {
-    auto &lista = dane[hash_fun(klucz)]; // Jakbyśmy zmienili co trzymamy w środku to sie dostosuje :)
-    // NADAL UWAŻAM ŻE W KUBŁACH POWINNY BYĆ PARA (KLUCZ i WARTOŚĆ) A NIE SAMA WARTOŚĆ
-    // JAK MASZ WŁODZIMIERZA I KAZIMIERZA W TYM SAMYM KUBLE TO SKĄD WIEDZIEĆ KTÓREGO JEST 69 A KTÓREGO 420 W POLSCE
+    auto &lista = dane[hash_fun(klucz)]; // Jakbyśmy zmienili co trzymamy w środku to sie dostosuje :) 
+    lista.remove_at(search(klucz) - 1);
     return true;
-
-    
   }
+
+  unsigned int get_val(wchar_t* klucz){
+    auto &lista = dane[hash_fun(klucz)];
+    size_t idx = search(klucz);
+    // if()
+    return lista.at_position(search(klucz) - 1)->value().get_key();
+  }
+
+  virtual size_t search(wchar_t* klucz){
+    auto &lista = dane[hash_fun(klucz)];
+    Pair dummy(0, klucz);
+    unsigned int i = lista.find_index(dummy);
+    // if(i == lista.get_size() + 1){
+    //   throw std::out_of_range("Nie odnaleziono takiego elementu!");
+    // }
+    std::cout << "ORZEŁ: "<<lista.get_size() << std::endl;
+    lista._show();
+    return i;
+  }  
 
   void _show() const { dane._show(); };
   size_t size() const { return dane.size(); };

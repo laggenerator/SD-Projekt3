@@ -36,6 +36,7 @@ class List {
 public:
   List() { head = nullptr; tail = nullptr; size = 0;}
   ~List() {
+    // if(size > 0) std::cout << "Usuwam liste rozmiaru: " << size << " " << *this << std::endl;
     Node<T>* iter = head;
     while (iter != nullptr) {
       Node<T>* temp = iter;
@@ -60,6 +61,29 @@ public:
   void _show();
 
   friend std::ostream& operator<< <>(std::ostream&, const List<T>&);
+
+  List& operator=(const List& other) {
+    if (this == &other) return *this;
+  
+    // usuń bieżącą zawartość
+    Node<T>* iter = head;
+    while (iter != nullptr) {
+      Node<T>* temp = iter;
+      iter = iter->next;
+      delete temp;
+    }
+    head = nullptr;
+  
+    // skopiuj z other
+    Node<T>* current = other.head;
+    while (current != nullptr) {
+      push_back(current->value());
+      current = current->next;
+    }
+  
+    return *this;
+  }
+  
 };
 
 template <typename T>
@@ -229,9 +253,9 @@ template <typename T>
 size_t List<T>::find_index(T val) const { //zwraca „indeks” elementu jesli go znajdzie, inaczej zwroci size
   if(size == 0)
     return size;
-  
   Node<T>* iter = head;
   int i = 0;
+  std::cout << iter->val << " = " << val << std::endl;
   while(iter->val != val) {
     iter = iter->next;
     ++i;
@@ -276,5 +300,7 @@ void List<T>::_show() {
   else
     std::cout << "Lista jest pusta!" << std::endl;
 }
+
+
 
 #endif

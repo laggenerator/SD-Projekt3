@@ -13,31 +13,33 @@ class DynamicArray{
     T* dane;
     std::size_t rozmiar;
     std::size_t pojemnosc;
-
-    void resize(std::size_t nowa_pojemnosc);
+    
     void shrink();
-
-  public:
+    
+    public:
     DynamicArray();
     ~DynamicArray();
-  
+    
     void push_back(T wartosc);
     void push_front(T wartosc);
     void push_at(unsigned int n, T wartosc);
-  
+    
     T remove_back();
     T remove_front();
     T remove_at(unsigned int n);
-  
+    
     int find(T wartosc);
     T at_position(unsigned int n);
   
     size_t size() const { return rozmiar; }
     size_t capacity() const { return pojemnosc; }
-  
+    
+    void resize(std::size_t nowa_pojemnosc);
+    
     void _show() const;
     T& operator[](size_t i); 
     DynamicArray& operator=(const DynamicArray& inny);
+
 };
 
 template<typename T>
@@ -68,6 +70,7 @@ void DynamicArray<T>::shrink() {
 
 template<typename T>
 void DynamicArray<T>::resize(std::size_t new_capacity) {
+  // std::cout << "ZMIENIAM ROZMIAR: " << new_capacity << std::endl;
   if (new_capacity == 0) {
     delete[] dane;
     dane = nullptr;
@@ -182,6 +185,7 @@ void DynamicArray<T>::_show() const {
 
 template<typename T>
 T& DynamicArray<T>::operator[](size_t i) {
+  // std::cout << "R: " << rozmiar << " P: " << pojemnosc << " i: " << i << "\n";
   if(i >= rozmiar) throw std::out_of_range("Index out of bounds!");
   return dane[i];
 }
