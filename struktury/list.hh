@@ -255,7 +255,7 @@ size_t List<T>::find_index(T val) const { //zwraca „indeks” elementu jesli g
     return size;
   Node<T>* iter = head;
   int i = 0;
-  std::cout << iter->val << " = " << val << std::endl;
+  // std::cout << iter->val << " = " << val << std::endl;
   while(iter->val != val) {
     iter = iter->next;
     ++i;

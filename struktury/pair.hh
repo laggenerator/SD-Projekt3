@@ -27,23 +27,25 @@ public:
 
   //operatory dzialające na wartościach klucza
   bool operator==(const Pair& p) const {
-    return (val == p.val);
+    return (std::wcsncmp(val, p.val, VAL_SIZE) == 0);
   }
   bool operator!=(const Pair& p) const {
-    return (val != p.val);
+    return !(*this == p);
+  }bool operator<(const Pair& p) const {
+    return std::wcscmp(val, p.val) < 0;
   }
-  bool operator<(const Pair& p) const {
-    return (val < p.val);
-  }
+  
   bool operator>(const Pair& p) const {
-    return (val > p.val);
+    return std::wcscmp(val, p.val) > 0;
   }
+  
   bool operator<=(const Pair& p) const {
-    return !(*this > p);
+    return std::wcscmp(val, p.val) <= 0;
   }
+  
   bool operator>=(const Pair& p) const {
-    return !(*this < p);
-  }
+    return std::wcscmp(val, p.val) >= 0;
+  }  
   Pair& operator=(const Pair& p) {
     if (this != &p) {
       key = p.key;

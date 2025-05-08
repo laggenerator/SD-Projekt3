@@ -60,27 +60,31 @@ class LinkStrategy : public HashMapStrategy {
   }
   bool remove(wchar_t* klucz) {
     auto &lista = dane[hash_fun(klucz)]; // Jakbyśmy zmienili co trzymamy w środku to sie dostosuje :) 
-    lista.remove_at(search(klucz) - 1);
-    return true;
+    size_t idx = search(klucz);
+    if(idx < lista.get_size()){
+      lista.remove_at(idx);
+      return true;
+    }
+    return false;
   }
 
   unsigned int get_val(wchar_t* klucz){
-    auto &lista = dane[hash_fun(klucz)];
+    unsigned int idk = hash_fun(klucz);
+    if(idk >= dane.size()) throw std::out_of_range("Nie ma takiego klucza w zbiorze!");
+    auto &lista = dane[idk];
     size_t idx = search(klucz);
-    // if()
-    return lista.at_position(search(klucz) - 1)->value().get_key();
+    if(idx < lista.get_size()){
+      return lista.at_position(idx)->value().get_key();
+    }
   }
 
   virtual size_t search(wchar_t* klucz){
-    auto &lista = dane[hash_fun(klucz)];
+    unsigned int idk = hash_fun(klucz);
+    if(idk >= dane.size()) throw std::out_of_range("Nie ma takiego klucza w zbiorze!");
+    auto &lista = dane[idk];
     Pair dummy(0, klucz);
-    unsigned int i = lista.find_index(dummy);
-    // if(i == lista.get_size() + 1){
-    //   throw std::out_of_range("Nie odnaleziono takiego elementu!");
-    // }
-    std::cout << "ORZEŁ: "<<lista.get_size() << std::endl;
-    lista._show();
-    return i;
+    return lista.find_index(dummy);
+    // return i;
   }  
 
   void _show() const { dane._show(); };
