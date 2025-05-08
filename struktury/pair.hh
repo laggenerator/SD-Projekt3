@@ -17,7 +17,7 @@ public:
     wcsncpy(val, p.val, VAL_SIZE-1);
     val[VAL_SIZE-1] = L'\0';
   };
-  Pair() : key(0) { memset(val, 0, VAL_SIZE*sizeof(wchar_t)); }
+  Pair() : key(0) { val[0] = '\0'; /*memset(val, 0, VAL_SIZE*sizeof(wchar_t));*/ } //zmienilem, bo chyba wystarczy tyle
 
   
   int get_key() const { return key; }

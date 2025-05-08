@@ -92,9 +92,109 @@ class LinkStrategy : public HashMapStrategy {
 };
 
 //liniowe
+//ogolnie to na poczatku ma rozmiar dwa, potem przy wstawianiu haszuje i potem liniowo próbuje wstawić na kolejne (+1)
+//jesli wolne to fajnie, jesli nie to niefajnie
 class LinearStrategy {
+private:
+  unsigned int (*hash_fun)(const wchar_t[VAL_SIZE]);
+  DynamicArray<Pair> dane;
+public:
+  LinearStrategy(unsigned int (*h)(const wchar_t[VAL_SIZE])) {
+    hash_fun = h;
+    for(int i = 0; i < 2; i++) {
+      Pair p0;
+      dane.push_back(p0);
+    }
+  };
+  ~LinearStrategy() {}
+  
+  //wstawianie -- na polu zwroconym przez haszującą, albo na kolejnym (+1) jesli wolne, jesli nie to jeszcze dalej
+  //ewentualnie az do konca tablicy haszującej, gdzie ją już rozszerzy specjalnie
+  bool insert(const int val, const wchar_t* key);
+  bool insert(Pair p) {
+    return insert(p.get_key(), p.get_val());
+  }
+  //usuniecie -- haszujemy klucz i albo jest on na tym indeksie (wspaniale) albo na nastepnym (dobrze) albo jeszcze dalej (srednio)
+  //albo jeszcze... albo w ogole go nie ma (okropnie)
+  bool remove(wchar_t* klucz);
+  int get_val(wchar_t* klucz); //zwraca wartosc jaka powiazana (lub wyjatek)
+  size_t search(wchar_t* klucz); //zwraca indeks gdzie przechowywane (lub wyjatek)
 
+  void _show() const { dane._show(); };
+  size_t size() const { return dane.size(); };
 };
+
+bool LinearStrategy::insert(const int val, const wchar_t* key) {
+  //std::cout << "Dodaję val = " << val << " key = " << key << std::endl;
+  if(key[0] == '\0') //proba wstawienia pustej wartosci, a w naszej logice to wolne pole wiec NIE MOŻE
+    throw std::out_of_range("Próba wstawienia nielegalnej wartości! Pusty łańuch znaków.");
+
+  unsigned int klucz = hash_fun(key);
+  //std::cout << "indeks: " << klucz << std::endl;
+  size_t rozmiar = dane.size();
+
+  //szukamy wolnego pola, ale wewnatrz tablicy
+  while(klucz < rozmiar && dane[klucz].get_val()[0] != '\0') {
+    klucz++;
+  }
+
+  //nie trafił wewnatrz tablicy :c
+  if(klucz > rozmiar-1) {
+    //std::cout << "rozszerzanie" << std::endl;
+    dane.resize(klucz+1);
+    for(size_t i = rozmiar; i <= klucz; ++i){
+      Pair p0;
+      dane.push_back(p0);
+    }
+  }
+
+  //wiec trafiło gdzieś w tablicę
+  Pair p(val, key);
+  dane[klucz] = p;
+  //std::cout << "dane[" << klucz << "] = " << p << std::endl;
+  return true; 
+}
+
+bool LinearStrategy::remove(wchar_t* klucz) {
+  //prezentacja systemu trajkacz
+  size_t indeks;
+  try {         
+    indeks = search(klucz);
+  } 
+  catch (std::out_of_range&) { //maly troll
+    throw std::out_of_range("Nie ma takiego klucza w zbiorze!");
+  }
+    
+  dane[indeks] = Pair(); //i ustawia na puste ("/0", 0)
+  return true;
+}
+
+int LinearStrategy::get_val(wchar_t* klucz){
+  size_t indeks;
+  try {         
+    indeks = search(klucz);
+  } 
+  catch (std::out_of_range&) {
+    throw std::out_of_range("Nie ma takiego klucza w zbiorze!");
+  }
+    
+  return dane[indeks].get_key();
+}
+
+size_t LinearStrategy::search(wchar_t* klucz){
+  if (klucz[0] == '\0')
+    throw std::out_of_range("Pusty klucz — nielegalny.");
+    
+  size_t indeks = hash_fun(klucz);
+  while(std::wcsncmp(klucz, dane[indeks].get_val(), VAL_SIZE) != 0) {
+    indeks++;
+    if(indeks == dane.size()) //nie znalazlo
+      throw std::out_of_range("Nie ma takiego klucza w zbiorze!");
+  }
+    
+  //jednak znalazlo
+  return indeks;
+}  
 
 //kukułka
 class CuckooStrategy {

@@ -8,12 +8,13 @@
 
 int main() {
   std::setlocale(LC_ALL, "en_US.utf8"); //dzialaaaaa dziala dziala dziala
-  LinkStrategy mapa(modulo_hash);
+  LinearStrategy mapa(hash1);
   mapa.insert(120, L"KAŹMIERZ");
   mapa.insert(69, L"EUSTACHY");
   mapa.insert(420, L"ESUTACHY");
   mapa.insert(120, L"secs");
-
+  mapa._show();
+  
   // ISTNIEJĄCE
   int elo = mapa.search(L"EUSTACHY");
   std::cout << "POZYCJA: " << elo << std::endl;
