@@ -5,24 +5,37 @@
 #include <locale>
 #include "./struktury/hash.hh"
 #include "testy.hh"
+#include "wczytaj.hh"
 
 int main() {
-  std::setlocale(LC_ALL, "en_US.utf8"); //dzialaaaaa dziala dziala dziala
-  LinkStrategy mapa(modulo_hash);
-  mapa.insert(120, L"KAŹMIERZ");
-  mapa.insert(69, L"EUSTACHY");
-  mapa.insert(420, L"ESUTACHY");
-  mapa.insert(120, L"secs");
+  
+  DynamicArray<Pair> ludzie = wczytajCSV("./dane/meskie.csv");
+  DynamicArray<Pair> kobiety = wczytajCSV("./dane/zenskie.csv");
 
+  size_t arraysize = kobiety.size();
+  for(size_t i=0;i<arraysize;i++){
+    ludzie.push_back(kobiety[i]);
+  }
+  arraysize = ludzie.size();
+  std::cout << "Zmergowano tablice" << std::endl;
+  std::cout << ludzie.at_position(0) << std::endl;
+  std::cout << ludzie[0] << std::endl;
+  std::setlocale(LC_ALL, "en_US.utf8"); //dzialaaaaa dziala dziala dziala
+  std::cout << "AAAAAAA"  << std::endl;
+  LinkStrategy mapa(modulo_hash);
+  for(size_t i=0;i<arraysize;i++){
+    mapa.insert(ludzie[i]);
+  }
   // ISTNIEJĄCE
-  int elo = mapa.search(L"EUSTACHY");
+  // std::cout << ludzie[0].get_val() << std::endl;
+  int elo = mapa.search(ludzie[0].get_val());
   std::cout << "POZYCJA: " << elo << std::endl;
-  int ilosc = mapa.get_val(L"EUSTACHY");
-  std::cout << "JEST " << ilosc << " EUSTACHÓW" << std::endl;
-  elo = mapa.search(L"ESUTACHY");
+  int ilosc = mapa.get_val(ludzie[0].get_val());
+  std::cout << "Jest " << ilosc << " ludzi o imieniu: " << ludzie[0] << std::endl;
+  elo = mapa.search(ludzie[1].get_val());
   std::cout << "POZYCJA: " << elo << std::endl;
-  ilosc = mapa.get_val(L"ESUTACHY");
-  std::cout << "JEST " << ilosc << " ESUTACHÓW" << std::endl;
+  ilosc = mapa.get_val(ludzie[1].get_val());
+  std::cout << "Jest " << ilosc << " ludzi o imieniu: " << ludzie[1] << std::endl;
   
   // NIEISTNIEJĄCY
   try {

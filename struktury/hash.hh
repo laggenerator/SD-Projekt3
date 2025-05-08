@@ -13,9 +13,9 @@ public:
   virtual ~HashMapStrategy() = default;
   virtual bool insert(int val, const wchar_t* key) = 0;
   virtual bool insert(Pair p) = 0;
-  virtual bool remove(wchar_t* klucz) = 0;
-  virtual unsigned int get_val(wchar_t* klucz) = 0;
-  virtual size_t search(wchar_t* klucz) = 0;
+  virtual bool remove(const wchar_t* klucz) = 0;
+  virtual unsigned int get_val(const wchar_t* klucz) = 0;
+  virtual size_t search(const wchar_t* klucz) = 0;
 
 
   virtual void _show() const = 0;
@@ -31,7 +31,7 @@ class LinkStrategy : public HashMapStrategy {
   //pojawia sie potrzeba zainicjalizowania poczatkowo tablicy dynamicznej, np do 1000
   LinkStrategy(unsigned int (*h)(const wchar_t[VAL_SIZE])) {
     hash_fun = h;
-    for(int i = 0; i < 2; i++) {
+    for(int i = 0; i < 1e6; i++) {
       List<Pair> l0;
       dane.push_back(l0);
     }
@@ -57,7 +57,7 @@ class LinkStrategy : public HashMapStrategy {
   bool insert(Pair p) {
     return insert(p.get_key(), p.get_val());
   }
-  bool remove(wchar_t* klucz) {
+  bool remove(const wchar_t* klucz) {
     auto &lista = dane[hash_fun(klucz)]; // Jakbyśmy zmienili co trzymamy w środku to sie dostosuje :) 
     size_t idx = search(klucz);
     if(idx < lista.get_size()){
@@ -67,7 +67,7 @@ class LinkStrategy : public HashMapStrategy {
     return false;
   }
 
-  unsigned int get_val(wchar_t* klucz){
+  unsigned int get_val(const wchar_t* klucz){
     unsigned int idk = hash_fun(klucz);
     if(idk >= dane.size()) throw std::out_of_range("Nie ma takiego klucza w zbiorze!");
     auto &lista = dane[idk];
@@ -78,7 +78,7 @@ class LinkStrategy : public HashMapStrategy {
     }
   }
   
-  virtual size_t search(wchar_t* klucz){
+  virtual size_t search(const wchar_t* klucz){
     unsigned int idk = hash_fun(klucz);
     if(idk >= dane.size()) throw std::out_of_range("Nie ma takiego klucza w zbiorze!");
     auto &lista = dane[idk];
