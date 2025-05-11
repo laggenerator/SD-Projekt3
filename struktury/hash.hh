@@ -116,9 +116,9 @@ public:
   }
   //usuniecie -- haszujemy klucz i albo jest on na tym indeksie (wspaniale) albo na nastepnym (dobrze) albo jeszcze dalej (srednio)
   //albo jeszcze... albo w ogole go nie ma (okropnie)
-  bool remove(wchar_t* klucz);
-  int get_val(wchar_t* klucz); //zwraca wartosc jaka powiazana (lub wyjatek)
-  size_t search(wchar_t* klucz); //zwraca indeks gdzie przechowywane (lub wyjatek)
+  bool remove(const wchar_t* klucz);
+  int get_val(const wchar_t* klucz); //zwraca wartosc jaka powiazana (lub wyjatek)
+  size_t search(const wchar_t* klucz); //zwraca indeks gdzie przechowywane (lub wyjatek)
 
   void _show() const { dane._show(); };
   size_t size() const { return dane.size(); };
@@ -155,7 +155,7 @@ bool LinearStrategy::insert(const int val, const wchar_t* key) {
   return true; 
 }
 
-bool LinearStrategy::remove(wchar_t* klucz) {
+bool LinearStrategy::remove(const wchar_t* klucz) {
   //prezentacja systemu trajkacz
   size_t indeks;
   try {         
@@ -169,7 +169,7 @@ bool LinearStrategy::remove(wchar_t* klucz) {
   return true;
 }
 
-int LinearStrategy::get_val(wchar_t* klucz){
+int LinearStrategy::get_val(const wchar_t* klucz){
   size_t indeks;
   try {         
     indeks = search(klucz);
@@ -181,7 +181,7 @@ int LinearStrategy::get_val(wchar_t* klucz){
   return dane[indeks].get_key();
 }
 
-size_t LinearStrategy::search(wchar_t* klucz){
+size_t LinearStrategy::search(const wchar_t* klucz){
   if (klucz[0] == '\0')
     throw std::out_of_range("Pusty klucz — nielegalny.");
     
