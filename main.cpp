@@ -21,11 +21,13 @@ int main() {
   std::cout << ludzie.at_position(0) << std::endl;
   std::cout << ludzie[0] << std::endl;
   std::setlocale(LC_ALL, "en_US.utf8"); //dzialaaaaa dziala dziala dziala
-  std::cout << "AAAAAAA"  << std::endl;
-  LinkStrategy mapa(modulo_hash);
-  for(size_t i=0;i<arraysize;i++){
-    mapa.insert(ludzie[i]);
-  }
+  LinearStrategy mapa(hash1);
+  mapa.insert(120, L"KAŹMIERZ");
+  mapa.insert(69, L"EUSTACHY");
+  mapa.insert(420, L"ESUTACHY");
+  mapa.insert(120, L"secs");
+  mapa._show();
+  
   // ISTNIEJĄCE
   // std::cout << ludzie[0].get_val() << std::endl;
   int elo = mapa.search(ludzie[0].get_val());
