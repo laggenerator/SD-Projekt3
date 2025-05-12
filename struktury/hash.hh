@@ -31,7 +31,7 @@ class LinkStrategy : public HashMapStrategy {
   void rehash(){
     size_t rozmiar = dane.get_size();
     std::cout << "resize: " << rozmiar << std::endl;
-    dane.resize(rozmiar * 2);
+    dane.resize(rozmiar*2);
     for(size_t i=rozmiar;i<rozmiar*2;i++){
       List<Pair> l0;
       dane.push_back(l0);
@@ -45,7 +45,7 @@ class LinkStrategy : public HashMapStrategy {
         // std::cout << "ROZMIAR LISTY: " << lista.get_size() << std::endl;
         // dane._show();
         p = lista.remove_front();
-        std::cout << p << " " << hash_fun(p.get_val(), rozmiar) << " " << hash_fun(p.get_val(), rozmiar*2) << std::endl;
+        // std::cout << p << " " << hash_fun(p.get_val(), rozmiar) << " " << hash_fun(p.get_val(), rozmiar*2) << std::endl;
         klucz = hash_fun(p.get_val(), rozmiar*2);
         dane[klucz].push_back(p);
       }
@@ -67,10 +67,10 @@ class LinkStrategy : public HashMapStrategy {
     Pair p(val, key);
     if(dane[klucz].get_size() == 0) zajete++;
     dane[klucz].push_back(p);
-    std::cout << "zajete: " << zajete << " na: " << dane.get_size() << std::endl;
+    // std::cout << "zajete: " << zajete << " na: " << dane.get_size() << std::endl;
     // dane._show();
     // sprawdzenie rozmiaru
-    if((zajete / (float)rozmiar) >= 0.75){
+    if((zajete / (float)rozmiar) >= 0.7){
       rehash();
     }
 
@@ -238,5 +238,18 @@ unsigned int modulo_hash(const wchar_t tab[VAL_SIZE], unsigned int n){
   }
   return hash;
 }
+
+unsigned int jakis_hash(const wchar_t tab[VAL_SIZE], unsigned int n){
+  int dlugosc=0;
+  unsigned int hash = 0;
+  // Dlugosc wartosci
+  while(tab[dlugosc] != '\0'){
+    hash = (hash * 227) ^ static_cast<unsigned int> (tab[dlugosc]);
+    dlugosc++;
+  }
+  return hash%n;
+}
+
+
 
 #endif // HASH_HH

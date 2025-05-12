@@ -7,7 +7,7 @@
 #include "testy.hh"
 #include "wczytaj.hh"
 
-int main() {  
+int main(){
   DynamicArray<Pair> ludzie = wczytajCSV("./dane/meskie.csv");
   DynamicArray<Pair> kobiety = wczytajCSV("./dane/zenskie.csv");
 
@@ -21,10 +21,10 @@ int main() {
   std::cout << ludzie[0] << std::endl;
   std::setlocale(LC_ALL, "en_US.utf8"); //dzialaaaaa dziala dziala dziala
   LinkStrategy mapa(modulo_hash);
-  for(size_t xxx=0;xxx<100;xxx++)
+  for(size_t xxx=0;xxx<arraysize;xxx++)
   mapa.insert(ludzie[xxx]);
   
-  mapa._show();
+  // mapa._show();
   // ISTNIEJĄCE
   // std::cout << ludzie[0].get_val() << std::endl;
   int elo = mapa.search(ludzie[0].get_val());
@@ -32,7 +32,7 @@ int main() {
   int ilosc = mapa.get_val(ludzie[0].get_val());
   std::cout << "Jest " << ilosc << " ludzi o imieniu: " << ludzie[0] << std::endl;
   elo = mapa.search(ludzie[1].get_val());
-  std::cout << "POZYCJA: " << elo << std::endl;
+  std::cout << "POZYCJA: " << elo << " klucz: " << modulo_hash(ludzie[0].get_val(), mapa.size()) << std::endl;
   ilosc = mapa.get_val(ludzie[1].get_val());
   std::cout << "Jest " << ilosc << " ludzi o imieniu: " << ludzie[1] << std::endl;
   
