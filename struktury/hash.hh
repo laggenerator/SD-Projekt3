@@ -9,15 +9,15 @@
 //klasa wirtualna, po ktorej dziedzicza strategie rozne trzy
 //nastepnie dawana jako argument do konstruktora HashMap
 class HashMapStrategy {
-public:
+  public:
   virtual ~HashMapStrategy() = default;
   virtual bool insert(int val, const wchar_t* key) = 0;
   virtual bool insert(Pair p) = 0;
   virtual bool remove(const wchar_t* klucz) = 0;
   virtual unsigned int get_val(const wchar_t* klucz) = 0;
   virtual size_t search(const wchar_t* klucz) = 0;
-
-
+  
+  
   virtual void _show() const = 0;
   virtual size_t size() const = 0;
 };
@@ -25,32 +25,55 @@ public:
 //łańcuchowanie sigmowanie
 //dodaje na koniec listy 
 class LinkStrategy : public HashMapStrategy {
-  unsigned int (*hash_fun)(const wchar_t[VAL_SIZE]);
+  unsigned int (*hash_fun)(const wchar_t[VAL_SIZE], unsigned int n);
   DynamicArray<List<Pair>> dane;
+  unsigned int zajete = 0;
+  void rehash(){
+    size_t rozmiar = dane.get_size();
+    std::cout << "resize: " << rozmiar << std::endl;
+    dane.resize(rozmiar * 2);
+    for(size_t i=rozmiar;i<rozmiar*2;i++){
+      List<Pair> l0;
+      dane.push_back(l0);
+    }
+    Pair p;
+    unsigned int klucz, rozmiarkubla;
+    for(size_t i=0;i<rozmiar;i++){
+      auto& lista = dane[i];
+      rozmiarkubla = lista.get_size();
+      for(unsigned int j=0;j<rozmiarkubla;j++){
+        // std::cout << "ROZMIAR LISTY: " << lista.get_size() << std::endl;
+        // dane._show();
+        p = lista.remove_front();
+        std::cout << p << " " << hash_fun(p.get_val(), rozmiar) << " " << hash_fun(p.get_val(), rozmiar*2) << std::endl;
+        klucz = hash_fun(p.get_val(), rozmiar*2);
+        dane[klucz].push_back(p);
+      }
+    }
+  }
   public:
   //pojawia sie potrzeba zainicjalizowania poczatkowo tablicy dynamicznej, np do 1000
-  LinkStrategy(unsigned int (*h)(const wchar_t[VAL_SIZE])) {
+  LinkStrategy(unsigned int (*h)(const wchar_t[VAL_SIZE], unsigned int n)) {
     hash_fun = h;
-    for(int i = 0; i < 1e6; i++) {
+    for(int i = 0; i < 2; i++) {
       List<Pair> l0;
       dane.push_back(l0);
     }
   };
   ~LinkStrategy() {}
   bool insert(const int val, const wchar_t* key) {
-    unsigned int klucz = hash_fun(key);
-    size_t rozmiar = dane.size();
-    if(klucz > dane.size() -1){
-      dane.resize(klucz+1);
-
-      for(size_t i=rozmiar;i<=klucz;i++){
-        List<Pair> l0;
-        dane.push_back(l0);
-      }
+    unsigned int klucz = hash_fun(key, dane.get_size());
+    size_t rozmiar = dane.get_size();
+    Pair p(val, key);
+    if(dane[klucz].get_size() == 0) zajete++;
+    dane[klucz].push_back(p);
+    std::cout << "zajete: " << zajete << " na: " << dane.get_size() << std::endl;
+    // dane._show();
+    // sprawdzenie rozmiaru
+    if((zajete / (float)rozmiar) >= 0.75){
+      rehash();
     }
 
-    Pair p(val, key);
-    dane[klucz].push_back(p);
     // std::cout << "Wstawiam ziutka: " << klucz << std::endl;
     return true; //nie moze sie nie udac :)
   }
@@ -58,7 +81,7 @@ class LinkStrategy : public HashMapStrategy {
     return insert(p.get_key(), p.get_val());
   }
   bool remove(const wchar_t* klucz) {
-    auto &lista = dane[hash_fun(klucz)]; // Jakbyśmy zmienili co trzymamy w środku to sie dostosuje :) 
+    auto &lista = dane[hash_fun(klucz, dane.get_size())]; // Jakbyśmy zmienili co trzymamy w środku to sie dostosuje :) 
     size_t idx = search(klucz);
     if(idx < lista.get_size()){
       lista.remove_at(idx);
@@ -68,19 +91,20 @@ class LinkStrategy : public HashMapStrategy {
   }
 
   unsigned int get_val(const wchar_t* klucz){
-    unsigned int idk = hash_fun(klucz);
-    if(idk >= dane.size()) throw std::out_of_range("Nie ma takiego klucza w zbiorze!");
+    unsigned int idk = hash_fun(klucz, dane.get_size());
     auto &lista = dane[idk];
     if(lista.get_size() == 0) throw std::out_of_range("Nie ma takiego klucza w zbiorze!");
     size_t idx = search(klucz);
     if((idx < lista.get_size())){
+
       return lista.at_position(idx)->value().get_key();
     }
+    throw std::out_of_range("Nie ma takiego klucza w zbiorze!");
   }
   
   virtual size_t search(const wchar_t* klucz){
-    unsigned int idk = hash_fun(klucz);
-    if(idk >= dane.size()) throw std::out_of_range("Nie ma takiego klucza w zbiorze!");
+    unsigned int idk = hash_fun(klucz, dane.get_size());
+    if(idk >= dane.get_size()) throw std::out_of_range("Nie ma takiego klucza w zbiorze!");
     auto &lista = dane[idk];
     if(lista.get_size() == 0) throw std::out_of_range("Przeszukiwany kubełek jest pusty!");
     Pair dummy(0, klucz);
@@ -88,7 +112,7 @@ class LinkStrategy : public HashMapStrategy {
   }  
 
   void _show() const { dane._show(); };
-  size_t size() const { return dane.size(); };
+  size_t size() const { return dane.get_size(); };
 };
 
 //liniowe
@@ -121,7 +145,7 @@ public:
   size_t search(const wchar_t* klucz); //zwraca indeks gdzie przechowywane (lub wyjatek)
 
   void _show() const { dane._show(); };
-  size_t size() const { return dane.size(); };
+  size_t size() const { return dane.get_size(); };
 };
 
 bool LinearStrategy::insert(const int val, const wchar_t* key) {
@@ -131,7 +155,7 @@ bool LinearStrategy::insert(const int val, const wchar_t* key) {
 
   unsigned int klucz = hash_fun(key);
   //std::cout << "indeks: " << klucz << std::endl;
-  size_t rozmiar = dane.size();
+  size_t rozmiar = dane.get_size();
 
   //szukamy wolnego pola, ale wewnatrz tablicy
   while(klucz < rozmiar && dane[klucz].get_val()[0] != '\0') {
@@ -188,7 +212,7 @@ size_t LinearStrategy::search(const wchar_t* klucz){
   size_t indeks = hash_fun(klucz);
   while(std::wcsncmp(klucz, dane[indeks].get_val(), VAL_SIZE) != 0) {
     indeks++;
-    if(indeks == dane.size()) //nie znalazlo
+    if(indeks == dane.get_size()) //nie znalazlo
       throw std::out_of_range("Nie ma takiego klucza w zbiorze!");
   }
     
@@ -201,16 +225,16 @@ class CuckooStrategy {
   
 };
 
-unsigned int hash1(const wchar_t tab[VAL_SIZE]) {
+unsigned int hash1(const wchar_t tab[VAL_SIZE], unsigned int n) {
   return 1;
 }
 
-unsigned int modulo_hash(const wchar_t tab[VAL_SIZE]){
-  const unsigned int p = 31; // Internet jej lubi używać nie wiem czemu
-  const unsigned int duze_modulo = 1e6;
+unsigned int modulo_hash(const wchar_t tab[VAL_SIZE], unsigned int n){
+  const unsigned int p = 13; // Internet jej lubi używać nie wiem czemu
   unsigned int hash = 0;
   for(int i=0;i<VAL_SIZE;i++){
-    hash = (hash + (tab[i] % p)) % duze_modulo;
+    if(tab[i] == '\0') break;
+    hash = (hash + (tab[i] % p)) % n;
   }
   return hash;
 }

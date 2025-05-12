@@ -31,7 +31,7 @@ class DynamicArray{
     int find(T wartosc);
     T at_position(unsigned int n);
   
-    size_t size() const { return rozmiar; }
+    size_t get_size() const { return rozmiar; }
     size_t capacity() const { return pojemnosc; }
     
     void resize(std::size_t nowa_pojemnosc);

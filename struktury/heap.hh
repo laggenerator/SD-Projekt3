@@ -29,7 +29,7 @@ public:
 ▶ Słownik oznacza konieczność dodatkowej pamięci.*/
   void build(DynamicArray<Pair>& tablica);
   void build(std::initializer_list<Pair> lista);
-  size_t size() { return dane.size(); }
+  size_t size() { return dane.get_size(); }
 
   void _show() { dane._show(); }
 };
