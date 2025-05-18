@@ -9,36 +9,37 @@
 
 template<typename T>
 class DynamicArray{
-  private:
-    T* dane;
-    std::size_t rozmiar;
-    std::size_t pojemnosc;
+private:
+  T* dane;
+  std::size_t rozmiar;
+  std::size_t pojemnosc;
     
-    void shrink();
+  void shrink();
     
-    public:
-    DynamicArray();
-    ~DynamicArray();
+public:
+  DynamicArray();
+  ~DynamicArray();
+  DynamicArray(const DynamicArray& inny);
     
-    void push_back(T wartosc);
-    void push_front(T wartosc);
-    void push_at(unsigned int n, T wartosc);
+  void push_back(T wartosc);
+  void push_front(T wartosc);
+  void push_at(unsigned int n, T wartosc);
     
-    T remove_back();
-    T remove_front();
-    T remove_at(unsigned int n);
+  T remove_back();
+  T remove_front();
+  T remove_at(unsigned int n);
     
-    int find(T wartosc);
-    T at_position(unsigned int n);
+  int find(T wartosc);
+  T at_position(unsigned int n);
   
-    size_t get_size() const { return rozmiar; }
-    size_t capacity() const { return pojemnosc; }
+  size_t get_size() const { return rozmiar; }
+  size_t capacity() const { return pojemnosc; }
     
-    void resize(std::size_t nowa_pojemnosc);
+  void resize(std::size_t nowa_pojemnosc);
     
-    void _show() const;
-    T& operator[](size_t i); 
-    DynamicArray& operator=(const DynamicArray& inny);
+  void _show() const;
+  T& operator[](size_t i); 
+  DynamicArray& operator=(const DynamicArray& inny);
 
 };
 
@@ -49,6 +50,16 @@ template<typename T>
 DynamicArray<T>::~DynamicArray() {
   if(dane) {
     delete[] dane;
+  }
+}
+
+template<typename T>
+DynamicArray<T>::DynamicArray(const DynamicArray& inny) {
+  pojemnosc = inny.pojemnosc;
+  rozmiar = inny.rozmiar;
+  dane = new T[pojemnosc];
+  for (std::size_t i = 0; i < rozmiar; ++i) {
+    dane[i] = inny.dane[i];
   }
 }
 
