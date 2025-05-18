@@ -4,7 +4,7 @@ CXXFLAGS = -Wall -Wextra -pedantic -std=c++17 -O0
 TARGET = egzek
 
 SRCS = main.cpp ./struktury/heap.cpp
-HEADERS = ./struktury/hash.hh ./struktury/dynamic_array.hh ./struktury/list.hh ./struktury/heap.hh ./struktury/pair.hh testy.hh wczytaj.hh
+HEADERS = ./struktury/IHash.hh ./struktury/cuckoo_hash.hh ./struktury/link_hash.hh ./struktury/linear_hash.hh ./struktury/hash_table.hh ./struktury/dynamic_array.hh ./struktury/list.hh ./struktury/heap.hh ./struktury/pair.hh testy.hh wczytaj.hh
 
 all: $(TARGET)
 
