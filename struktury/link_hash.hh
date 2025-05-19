@@ -35,9 +35,9 @@ class LinkStrategy : public HashMapStrategy {
   }
   public:
   //pojawia sie potrzeba zainicjalizowania poczatkowo tablicy dynamicznej, np do 1000
-  LinkStrategy(unsigned int (*h)(const wchar_t[VAL_SIZE], unsigned int n)) {
+  LinkStrategy(unsigned int (*h)(const wchar_t[VAL_SIZE], unsigned int n), int wielkosc = 2) {
     hash_fun = h;
-    for(int i = 0; i < 2; i++) {
+    for(int i = 0; i < wielkosc; i++) {
       dane.push_back(List<Pair>());
     }
   };
