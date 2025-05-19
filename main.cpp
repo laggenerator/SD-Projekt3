@@ -22,7 +22,8 @@ int main(){
   std::cout << ludzie[0] << std::endl;
   std::setlocale(LC_ALL, "en_US.utf8"); //dzialaaaaa dziala dziala dziala
   //z tymi haszami dziala, nie zalecalbym dawac tu tego modulo bo daje tylko maly zakres i bedzie czesto sie zapetlac
-  CuckooStrategy mapa(fnv_1, djb2, 100000);
+  // CuckooStrategy mapa(fnv_1, djb2, 100000);
+  LinkStrategy mapa(fnv_1);
   for(size_t xxx=0;xxx<10000;xxx++) {
     mapa.insert(ludzie[xxx]);
     //plik << xxx << ";" << fnv_1(ludzie[xxx].get_val(), 100000) << std::endl;

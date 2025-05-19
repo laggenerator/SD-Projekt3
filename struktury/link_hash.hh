@@ -66,6 +66,9 @@ class LinkStrategy : public HashMapStrategy {
     size_t idx = search(klucz);
     if(idx < lista.get_size()){
       lista.remove_at(idx);
+      if(lista.get_size() == 0){
+        zajete--;
+      }
       return true;
     }
     return false;
