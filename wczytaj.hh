@@ -7,6 +7,7 @@
 #include <codecvt>
 #include <string>
 #include <cwchar>  // wcsncpy
+#include "unordered_map"
 
 #include "./struktury/dynamic_array.hh"
 #include "./struktury/pair.hh"
@@ -46,8 +47,39 @@ DynamicArray<Pair> wczytajCSV(const std::string& nazwa_pliku) {
   return wynik;
 }
 
-#define N_ZAPIS 1000
-#define ROZMIAR_TESTU 69180
+
+DynamicArray<Pair> mergeTablic(DynamicArray<Pair>& arr1, DynamicArray<Pair>& arr2){
+  std::unordered_map<std::wstring, int> imiona;
+
+  for(size_t i=0;i<arr1.get_size();i++){
+    Pair p = arr1[i];
+    std::wstring imie = p.get_val();
+    int wartosc = p.get_key();
+
+    if(imiona.find(imie) == imiona.end() || wartosc > imiona[imie]){
+      imiona[imie] = wartosc;
+    }
+  }
+
+  for(size_t i=0;i<arr2.get_size();i++){
+    Pair p = arr2[i];
+    std::wstring imie = p.get_val();
+    int wartosc = p.get_key();
+
+    if(imiona.find(imie) == imiona.end() || wartosc > imiona[imie]){
+      imiona[imie] = wartosc;
+    }
+  }
+
+  DynamicArray<Pair> merged;
+  for(auto& para : imiona){
+    merged.push_back(Pair(para.second, para.first.c_str()));
+  }
+  return merged;
+}
+
+#define N_ZAPIS 500
+#define ROZMIAR_TESTU 65924
 
 void zapisz(const char* nazwa_pliku, double dane[3][ROZMIAR_TESTU]) {
   //zapis do pliku

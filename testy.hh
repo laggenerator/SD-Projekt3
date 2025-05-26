@@ -6,14 +6,7 @@ PESYMISTYCZNY:
   Separate chaining: wywalone
   Linear: kubełek 70%*pojemnosc-1 jest wolny dopiero
 */
-/* USUWANIE:
-OPTYMISTYCZNY:
-  Separate chaining: na początku/końcu kubełka
-  Linear: jest w swoim kubełku
-PESYMISTYCZNY:
-  Separate chaining: środek kubełka trzeba przejść n-elementów
-  Linear: jest w kubełku najdalej od swojego (70%*pojemnosc -1 )%pojemnosc
-*/
+
 
 #ifndef TESTY_HH
 #define TESTY_HH
@@ -119,6 +112,132 @@ void testInsertPesymistycznyLinear(std::unique_ptr<LinearStrategy> hashmap, Dyna
     for(size_t i=0;i<rozmiar;i++){
       auto start = std::chrono::high_resolution_clock::now();
       hashmap->insert(kandydat);
+      auto end = std::chrono::high_resolution_clock::now();
+      std::chrono::duration<double, std::nano> czas = end - start;
+      czasy[i] += czas.count();
+    }
+  }
+  for(size_t i=0;i<rozmiar;i++){
+    czasy[i] /= ILOSC_PROBEK;
+  }
+}
+
+/* USUWANIE:
+OPTYMISTYCZNY:
+  Separate chaining: na początku/końcu kubełka
+  Linear: jest w swoim kubełku
+PESYMISTYCZNY:
+  Separate chaining: środek kubełka trzeba przejść n-elementów
+  Linear: jest w kubełku najdalej od swojego (70%*pojemnosc -1 )%pojemnosc
+*/
+
+void testRemoveOptymistycznyChaining(std::unique_ptr<LinkStrategy> hashmap, DynamicArray<Pair> *dane, int seed, double* czasy){
+  const size_t rozmiar = dane->get_size();
+  for(size_t i=0;i<rozmiar;i++){
+    czasy[i]=0;
+  }
+  for(int proba=0;proba<ILOSC_PROBEK;proba++){
+    for(size_t i=0;i<rozmiar;i++){
+      // std::cout << "elo " << i  << std::endl;
+      hashmap->insert((*dane)[i]);
+    }
+    for(size_t i=rozmiar-1;i>0;i--){
+      // Może oszukane ale optymistyczne nie
+      int klucz = hashmap->generate_key((*dane)[i].get_val());
+      int n = hashmap->dane[klucz].find_index((*dane)[i]);
+      Pair para = hashmap->dane[klucz].remove_at(n);
+      hashmap->dane[klucz].push_front(para);
+
+      auto start = std::chrono::high_resolution_clock::now();
+      hashmap->remove((*dane)[i].get_val());
+      auto end = std::chrono::high_resolution_clock::now();
+      std::chrono::duration<double, std::nano> czas = end - start;
+      czasy[i] += czas.count();
+    }
+  }
+  for(size_t i=0;i<rozmiar;i++){
+    czasy[i] /= ILOSC_PROBEK;
+  }
+}
+
+void testRemovePesymistycznyChaining(std::unique_ptr<LinkStrategy> hashmap, DynamicArray<Pair> *dane, int seed, double* czasy){
+  const size_t rozmiar = dane->get_size();
+  for(size_t i=0;i<rozmiar;i++){
+    czasy[i]=0;
+  }
+  for(int proba=0;proba<ILOSC_PROBEK;proba++){
+    for(size_t i=0;i<rozmiar;i++){
+      hashmap->insert((*dane)[i]);
+    }
+    for(size_t i=rozmiar-1;i>0;i--){
+      // Może oszukane ale pesymistyczne nie
+      int klucz = hashmap->generate_key((*dane)[i].get_val());
+      int n = hashmap->dane[klucz].find_index((*dane)[i]);
+      Pair para = hashmap->dane[klucz].remove_at(n);
+      int srodek = hashmap->dane[klucz].get_size() / 2;
+      hashmap->dane[klucz].push_at(srodek, para);
+
+      auto start = std::chrono::high_resolution_clock::now();
+      hashmap->remove((*dane)[i].get_val());
+      auto end = std::chrono::high_resolution_clock::now();
+      std::chrono::duration<double, std::nano> czas = end - start;
+      czasy[i] += czas.count();
+    }
+  }
+  for(size_t i=0;i<rozmiar;i++){
+    czasy[i] /= ILOSC_PROBEK;
+  }
+}
+
+
+
+void testRemoveOptymistycznyLinear(std::unique_ptr<LinearStrategy> hashmap, DynamicArray<Pair> *dane, int seed, double* czasy){
+  const size_t rozmiar = dane->get_size();
+  srand(time(NULL));
+  for(size_t i=0;i<rozmiar;i++){
+    czasy[i]=0;
+  }
+  for(int proba=0;proba<ILOSC_PROBEK;proba++){
+    for(size_t i=0;i<rozmiar;i++){
+      hashmap->insert((*dane)[i]);
+      // std::cout << "Dodawanie" << std::endl;
+    }
+    // OPTYMISTYCZNIE ZAWSZE JEST WSZYSTKO NA SWOIM MIEJSCU CO POWINNO BYC MOZLIWE PO PROSTU WKLADAJAC WSZYSTKO BO MOZE NIE BEDZIE KOLIZJI MAM NADZIEJE
+    // Czasem tu sie zdarza kolizja ale zawsze wychodzi jedynie przemieszczenie o 1 element w prawo co da stały nakład niezauważalny praktycznie w wynikach
+    for(size_t i=rozmiar-1;i>0;i--){
+      bool udaloSie = false;
+      auto start = std::chrono::high_resolution_clock::now();
+      udaloSie = hashmap->remove((*dane)[i].get_val());
+      auto end = std::chrono::high_resolution_clock::now();
+      // std::cout << "usuwanie" << std::endl;
+      std::chrono::duration<double, std::nano> czas = end - start;
+      if(udaloSie){
+        czasy[i] += czas.count();
+      } else {
+        std::cout << "Porazka" << std::endl;
+        czasy[i] = -1000;
+      }
+    }
+  }
+  for(size_t i=0;i<rozmiar;i++){
+    czasy[i] /= ILOSC_PROBEK;
+  }
+}
+void testRemovePesymistycznyLinear(std::unique_ptr<LinearStrategy> hashmap, DynamicArray<Pair> *dane, int seed, double* czasy){
+  const size_t rozmiar = dane->get_size();
+  srand(time(NULL));
+  for(size_t i=0;i<rozmiar;i++){
+    czasy[i]=0;
+  }
+  for(int proba=0;proba<ILOSC_PROBEK;proba++){
+    for(size_t i=0;i<rozmiar;i++){
+      int klucz = (hashmap->generate_key((*dane)[i].get_val()) - 1) % hashmap->size();
+      hashmap->dane[klucz].ustaw((*dane)[i].get_key(), (*dane)[i].get_val());
+    }
+    // PESYMISTYCZNIE WĘDRUJE PO SWOJĄ PARĘ CAŁĄ LISTE
+    for(size_t i=rozmiar-1;i>0;i--){
+      auto start = std::chrono::high_resolution_clock::now();
+      hashmap->remove((*dane)[i].get_val());
       auto end = std::chrono::high_resolution_clock::now();
       std::chrono::duration<double, std::nano> czas = end - start;
       czasy[i] += czas.count();

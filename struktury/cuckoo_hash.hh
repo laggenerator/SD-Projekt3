@@ -166,6 +166,7 @@ bool CuckooStrategy::insert(int val, const wchar_t* key) {
     if(--licznikCyklu <= 0) {
       std::cout << "KONIEC CYKLU W ZWYKLEJ" << std::endl;
       std::cout << wstawiany << std::endl;
+      std::cout << indeks << std::endl;
       rehash(0);
       insert(wstawiany); //zeby nie zapomniec (jeden osiem L)
       return true;

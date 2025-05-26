@@ -9,7 +9,6 @@
 //dodaje na koniec listy 
 class LinkStrategy : public HashMapStrategy {
   unsigned int (*hash_fun)(const wchar_t[VAL_SIZE], unsigned int n);
-  DynamicArray<List<Pair>> dane;
   unsigned int zajete = 0;
   void rehash(){
     size_t rozmiar = dane.get_size();
@@ -34,6 +33,7 @@ class LinkStrategy : public HashMapStrategy {
     }
   }
   public:
+  DynamicArray<List<Pair>> dane;
   //pojawia sie potrzeba zainicjalizowania poczatkowo tablicy dynamicznej, np do 1000
   LinkStrategy(unsigned int (*h)(const wchar_t[VAL_SIZE], unsigned int n), int wielkosc = 2) {
     hash_fun = h;

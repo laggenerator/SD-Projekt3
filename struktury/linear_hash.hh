@@ -61,12 +61,12 @@ std::ostream& operator<<(std::ostream& os, const Slot& p) {
 class LinearStrategy : public HashMapStrategy {
 private:
   unsigned int (*hash_fun)(const wchar_t[VAL_SIZE], unsigned int n);
-  DynamicArray<Slot> dane;
   int zajete = 0;
-
+  
   void rehash();
   
-public:
+  public:
+  DynamicArray<Slot> dane;
   LinearStrategy(unsigned int (*h)(const wchar_t[VAL_SIZE], unsigned int n), int wielkosc = 2) {
     hash_fun = h;
     for(int i = 0; i < wielkosc; i++) {
@@ -164,7 +164,9 @@ bool LinearStrategy::remove(const wchar_t* klucz) {
     indeks = search(klucz);
   } 
   catch (std::out_of_range&) { //maly troll
-    throw std::out_of_range("Nie ma takiego klucza w zbiorze!");
+    // throw std::out_of_range("Nie ma takiego klucza w zbiorze!");
+    std::cerr << "Nie ma takiego klucza w zbiorze!" << std::endl;
+    return false;
   }
 
   zajete--;
@@ -193,7 +195,11 @@ size_t LinearStrategy::search(const wchar_t* klucz){
 
     if (slot.zajete() && !slot.usuniete()) {
       if (std::wcsncmp(klucz, slot.get_val(), VAL_SIZE) == 0) {
-	return indeks;
+        if(startowy -= indeks) {
+          // std::cout << "Kolizja byla jakas smuteczek: " << startowy << " -> " << indeks << std::endl; 
+          throw std::out_of_range("elo");
+        }
+	      return indeks;
       }
     }
 
