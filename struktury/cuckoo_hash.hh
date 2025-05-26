@@ -23,7 +23,7 @@ public:
   bool remove(const wchar_t* klucz) override;
   int get_val(const wchar_t* klucz) override;
   size_t search(const wchar_t* klucz) override;
-  
+  int generate_key(const wchar_t* klucz) override;
   
   void _show() const override;
   size_t size() const override;
@@ -121,6 +121,10 @@ size_t CuckooStrategy::search(const wchar_t* klucz) {
 
   throw std::out_of_range("Nie ma takiego klucza w zbiorze!");
 }
+
+  int CuckooStrategy::generate_key(const wchar_t* klucz) {
+    return 1;
+  }
 
 void CuckooStrategy::_show() const { tab1._show(); tab2._show(); }
 
