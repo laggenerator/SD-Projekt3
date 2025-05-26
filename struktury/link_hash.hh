@@ -94,6 +94,9 @@ class LinkStrategy : public HashMapStrategy {
     Pair dummy(0, klucz);
     return lista.find_index(dummy);
   }  
+  int generate_key(const wchar_t* klucz) {
+    return hash_fun(klucz, dane.get_size());
+  }
 
   void _show() const { dane._show(); };
   size_t size() const { return dane.get_size(); };

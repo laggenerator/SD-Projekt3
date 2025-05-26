@@ -90,6 +90,8 @@ public:
   bool remove(const wchar_t* klucz) override;
   int get_val(const wchar_t* klucz) override; //zwraca wartosc jaka powiazana (lub wyjatek)
   size_t search(const wchar_t* klucz) override; //zwraca indeks gdzie przechowywane (lub wyjatek)
+  int generate_key(const wchar_t* klucz) override;
+  bool move(int skond, int dokond);
 
   void _show() const override;
   size_t size() const override;
@@ -133,17 +135,19 @@ bool LinearStrategy::insert(const int val, const wchar_t* key) {
   unsigned int startowy = klucz; //bo bedziemy przegladac do konca, potem od poczatku do tego
   size_t rozmiar = dane.get_size();
   bool zwrot = true;
+  // std::cout << "KLUCZ: " << klucz << std::endl;
   //szukamy wolnego pola, ale wewnatrz tablicy
   while (dane[klucz].zajete() && !dane[klucz].usuniete()) {
     klucz = (klucz + 1) % rozmiar;
+    // std::cout << "NOWY KLUCZ: " << klucz << std::endl;
     if(klucz == startowy)
       return false;
-    if(std::wcsncmp(key, dane[klucz].get_val(), VAL_SIZE) == 0) {
-      zwrot = false;
-      //Pair para(val, key);
-      //std::cout << "NADPISANIE WARTOSCI " << para << std::endl;
-      break;
-    }
+    // if(std::wcsncmp(key, dane[klucz].get_val(), VAL_SIZE) == 0) {
+    //   zwrot = false;
+    //   //Pair para(val, key);
+    //   //std::cout << "NADPISANIE WARTOSCI " << para << std::endl;
+    //   break;
+    // }
   }
   dane[klucz].ustaw(val, key);
 
@@ -200,6 +204,22 @@ size_t LinearStrategy::search(const wchar_t* klucz){
 
   throw std::out_of_range("Nie ma takiego klucza w zbiorze!");
 }  
+int LinearStrategy::generate_key(const wchar_t* klucz){
+  return hash_fun(klucz, dane.get_size());
+}
+// Użycie tej funkcji DEBUGOWEJ zepsuje rehashowanie, używać tylko w laboratoryjnych warunkach
+bool LinearStrategy::move(int skond, int dokond){
+  if((skond >= 0 && skond < dane.get_size()) && (dokond >= 0 && dokond < dane.get_size())){
+    // std::cout << "dupa " << skond << " -> " << dokond << std::endl;
+    if(dane[dokond].zajete()) return false;
+    // std::cout << "dupa2" << std::endl;
+    dane[dokond] = dane[skond];
+    dane[skond] = Slot();
+    return true;
+  }
+  return false;
+}
+
 
 void LinearStrategy::_show() const { dane._show(); }
 

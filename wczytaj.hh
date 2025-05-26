@@ -45,4 +45,26 @@ DynamicArray<Pair> wczytajCSV(const std::string& nazwa_pliku) {
   std::cout << "Przetworzono plik!" << std::endl;
   return wynik;
 }
+
+#define N_ZAPIS 1000
+#define ROZMIAR_TESTU 69180
+
+void zapisz(const char* nazwa_pliku, double dane[3][ROZMIAR_TESTU]) {
+  //zapis do pliku
+  std::ofstream plik;
+  plik.open(nazwa_pliku, std::ios::out | std::ios::trunc);
+  if (!plik.is_open()) {
+    std::cerr << "Nie można otworzyć pliku: " << nazwa_pliku << std::endl;
+  }
+  plik << "Rozmiar;Chaining;Linear;Cuckoo" << std::endl;
+  //ogolnie pierwsza kolumna to po prostu i, ale np w usuwaniu to musi byc i+1, w insert juz i
+  for(size_t i = 1; i < ROZMIAR_TESTU; i+=N_ZAPIS) {
+    plik << i;
+    for(size_t j = 0; j < 3; ++j) {
+      plik << ";" << dane[j][i];
+    }
+    plik << std::endl;
+  }
+  plik.close();
+}
 #endif

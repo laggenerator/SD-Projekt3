@@ -12,6 +12,7 @@ class HashMapStrategy {
   virtual bool remove(const wchar_t* klucz) = 0;
   virtual int get_val(const wchar_t* klucz) = 0;
   virtual size_t search(const wchar_t* klucz) = 0;
+  virtual int generate_key(const wchar_t* klucz) = 0;
   
   
   virtual void _show() const = 0;
