@@ -17,7 +17,52 @@ int main(){
     ludzie.push_back(kobiety[i]);
   }
   arraysize = ludzie.get_size();
+  std::cout << "Zmergowano tablice" << std::endl;
+  std::cout << ludzie.at_position(0) << std::endl;
+  std::cout << ludzie[0] << std::endl;
   std::setlocale(LC_ALL, "en_US.utf8"); //dzialaaaaa dziala dziala dziala
+  
+  
+  
+ // HUMAN NOWY KOD
+  //z tymi haszami dziala, nie zalecalbym dawac tu tego modulo bo daje tylko maly zakres i bedzie czesto sie zapetlac
+  CuckooStrategy mapa(fnv_1_seed, djb2_seed, 100000);
+  //LinkStrategy mapa(fnv_1);
+  for(size_t xxx=0;xxx<ludzie.get_size();xxx++) {
+    try {
+      if(ludzie[xxx].get_key() == 165855)
+	std::cout << "KAROL" << std::endl;
+      mapa.insert(ludzie[xxx]);
+    } catch(std::exception& e) {
+      //std::cout << e.what() << " przy probie wstawienia wartosci " << ludzie[xxx] << std::endl;
+    }
+
+    //plik << xxx << ";" << fnv_1(ludzie[xxx].get_val(), 100000) << std::endl;
+  }
+  
+  // mapa._show();
+  // ISTNIEJĄCE
+  // std::cout << ludzie[0].get_val() << std::endl;
+  for(int i = 40; i < 45; ++i) {
+    std::cout << "Poszukuje " << ludzie[i] << std::endl;
+    std::cout << "POZYCJA: " << mapa.search(ludzie[i].get_val()) << std::endl;
+    std::cout << "Jest " << mapa.get_val(ludzie[i].get_val()) << " ludzi o imieniu: " << ludzie[i] << std::endl;
+  }
+  // NIEISTNIEJĄCY
+  try {
+    size_t elo = mapa.search(L"Arrur");
+    std::cout << "POZYCJA: " << elo << std::endl;
+  } catch (const std::out_of_range& err){
+    std::cout << "Błąd: " << err.what() << std::endl;
+  }
+  try {
+    int ilosc = mapa.get_val(L"Arrur");
+    std::cout << "JEST " << ilosc << " Arrurów" << std::endl;
+  } catch (const std::out_of_range& err){
+    std::cout << "Błąd: " << err.what() << std::endl;
+  }
+
+  // KOD Z TESTAMI
  
   std::cout << arraysize << std::endl;
   double czasyOPT[3][69180]; //Chaining, Linear, Cuckoo
