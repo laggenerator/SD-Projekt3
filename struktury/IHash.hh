@@ -44,9 +44,9 @@ unsigned int jakis_hash(const wchar_t tab[VAL_SIZE], unsigned int n){
   return hash%n;
 }
 
-unsigned int fnv_1(const wchar_t* str, unsigned int modulo) {
+unsigned int fnv_1_seed(const wchar_t* str, unsigned int modulo, unsigned int seed = 0x811c9dc5) {
   const unsigned int fnv_prime = 0x01000193;
-  unsigned int hash = 0x811C9DC5;
+  unsigned int hash = seed;
 
   while (*str) {
     hash ^= static_cast<unsigned int>(*str++);
@@ -55,13 +55,18 @@ unsigned int fnv_1(const wchar_t* str, unsigned int modulo) {
 
   return hash % modulo;
 }
+unsigned int fnv_1(const wchar_t* str, unsigned int modulo) {
+  return fnv_1_seed(str, modulo, 0x811c9dc5);
+}
 
-unsigned int djb2(const wchar_t* str, unsigned int modulo) {
-  unsigned int hash = 5381;
+unsigned int djb2_seed(const wchar_t* str, unsigned int modulo, unsigned int seed = 5381) {
+  unsigned int hash = seed;
   while (*str) {
     hash = ((hash << 5) + hash) + static_cast<unsigned int>(*str++); // hash * 33 + c
   }
   return hash % modulo;
 }
-
+unsigned int djb2(const wchar_t* str, unsigned int modulo) {
+  return djb2_seed(str, modulo, 5381);
+}
 #endif
