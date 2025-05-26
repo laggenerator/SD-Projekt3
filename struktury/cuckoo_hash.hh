@@ -31,7 +31,6 @@ public:
   size_t search(const wchar_t* klucz) override;
   int generate_key(const wchar_t* klucz)  override; //ale ktory zwrocic???, zwraca pierwszy
   
-  
   void _show() const override;
   size_t size() const override;
 };
@@ -239,6 +238,7 @@ size_t CuckooStrategy::search(const wchar_t* klucz) {
 int CuckooStrategy::generate_key(const wchar_t* klucz) {
   return hash_fun1(klucz, size()/2, seed[0]);
 }
+
 
 void CuckooStrategy::_show() const { tab1._show(); tab2._show(); }
 

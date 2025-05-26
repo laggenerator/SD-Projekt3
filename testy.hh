@@ -44,6 +44,24 @@ void testInsertOptymistycznyChaining(std::unique_ptr<LinkStrategy> hashmap, Dyna
     czasy[i] /= ILOSC_PROBEK;
   }
 }
+void testInsertSredni(std::unique_ptr<HashMapStrategy> hashmap, DynamicArray<Pair> *dane, int seed, double* czasy){
+  const size_t rozmiar = dane->get_size();
+  for(size_t i=0;i<rozmiar;i++){
+    czasy[i]=0;
+  }
+  for(int proba=0;proba<ILOSC_PROBEK;proba++){
+    for(size_t i=0;i<rozmiar;i++){
+      auto start = std::chrono::high_resolution_clock::now();
+      hashmap->insert((*dane)[i]);
+      auto end = std::chrono::high_resolution_clock::now();
+      std::chrono::duration<double, std::nano> czas = end - start;
+      czasy[i] += czas.count();
+    }
+  }
+  for(size_t i=0;i<rozmiar;i++){
+    czasy[i] /= ILOSC_PROBEK;
+  }
+}
 void testInsertPesymistycznyChaining(std::unique_ptr<LinkStrategy> hashmap, DynamicArray<Pair> *dane, int seed, double* czasy){
   const size_t rozmiar = dane->get_size();
   for(size_t i=0;i<rozmiar;i++){
@@ -96,7 +114,7 @@ void testInsertPesymistycznyLinear(std::unique_ptr<LinearStrategy> hashmap, Dyna
   }
   for(int proba=0;proba<ILOSC_PROBEK;proba++){
     Pair kandydat = (*dane)[rand() % rozmiar];
-    // OPTYMISTYCZNIE NIE MA REHASHOWANIA WIEC POJEMNOSC STARTOWA JEST RÓWNA ILOŚCI DANYCH (rozmiar tablicy imion)
+    // PESYMISTYCZNIE CAŁY CZAS WKŁADA SIĘ TEN SAM KLUCZ CZYLI LINEAR MUSI INSERTOWAĆ DALEJ I DALEJ OD KLUCZA
     int klucz = hashmap->generate_key(kandydat.get_val());
     for(size_t i=0;i<rozmiar;i++){
       auto start = std::chrono::high_resolution_clock::now();
