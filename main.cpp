@@ -112,26 +112,26 @@ int main(){
   std::cout << "Porownanie funkcji haszujacych insert cuckoo" << std::endl;
   testInsertSredni(std::make_unique<CuckooStrategy>(fnv_1_seed, fnv_1_seed, 1000000), &ludzie, 2137, czasyAVG[0]);
   testInsertSredni(std::make_unique<CuckooStrategy>(djb2_seed, djb2_seed, 1000000), &ludzie, 2137, czasyAVG[1]);
-  testInsertSredni(std::make_unique<CuckooStrategy>(murmur3_seed, murmur3_seed, 1000000), &ludzie, 2137, czasyAVG[2]);
+  // testInsertSredni(std::make_unique<CuckooStrategy>(murmur3_seed, murmur3_seed, 1000000), &ludzie, 2137, czasyAVG[2]);
 
   zapisz("CuckooInsert.csv", czasyAVG, true);
   std::cout << "Porownanie funkcji haszujacych remove cuckoo" << std::endl;
   testRemoveSredni(std::make_unique<CuckooStrategy>(fnv_1_seed, fnv_1_seed, 1000000), &ludzie, 2137, czasyAVG[0]);
   testRemoveSredni(std::make_unique<CuckooStrategy>(djb2_seed, djb2_seed, 1000000), &ludzie, 2137, czasyAVG[1]);
-  testRemoveSredni(std::make_unique<CuckooStrategy>(murmur3_seed, murmur3_seed, 1000000), &ludzie, 2137, czasyAVG[2]);
+  // testRemoveSredni(std::make_unique<CuckooStrategy>(murmur3_seed, murmur3_seed, 1000000), &ludzie, 2137, czasyAVG[2]);
 
   zapisz("CuckooRemove.csv", czasyAVG, true);
   
   std::cout << "Porownanie funkcji haszujacych insert chaining" << std::endl;
   testInsertSredni(std::make_unique<LinkStrategy>(fnv_1), &ludzie, 2137, czasyAVG[0]);
   testInsertSredni(std::make_unique<LinkStrategy>(djb2), &ludzie, 2137, czasyAVG[1]);
-  testInsertSredni(std::make_unique<LinkStrategy>(murmur3), &ludzie, 2137, czasyAVG[2]);
+  testInsertSredni(std::make_unique<LinkStrategy>(modulo_hash), &ludzie, 2137, czasyAVG[2]);
 
   zapisz("ChainingInsert.csv", czasyAVG, true);
   std::cout << "Porownanie funkcji haszujacych remove chaining" << std::endl;
   testRemoveSredni(std::make_unique<LinkStrategy>(fnv_1), &ludzie, 2137, czasyAVG[0]);
   testRemoveSredni(std::make_unique<LinkStrategy>(djb2), &ludzie, 2137, czasyAVG[1]);
-  testRemoveSredni(std::make_unique<LinkStrategy>(murmur3), &ludzie, 2137, czasyAVG[2]);
+  testRemoveSredni(std::make_unique<LinkStrategy>(modulo_hash), &ludzie, 2137, czasyAVG[2]);
 
   zapisz("ChainingRemove.csv", czasyAVG, true);
 }

@@ -101,7 +101,7 @@ void zapisz(const char* nazwa_pliku, double dane[3][ROZMIAR_TESTU], bool testfun
   if(!testfunkcji){
     plik << "Rozmiar;Chaining;Linear;Cuckoo" << std::endl;
   } else {
-    plik << "Rozmiar;FNV1;DJB2;Murmur3" << std::endl;
+    plik << "Rozmiar;FNV1;DJB2;Modulo" << std::endl;
   }
   //ogolnie pierwsza kolumna to po prostu i, ale np w usuwaniu to musi byc i+1, w insert juz i
   for(size_t i = 1; i < ROZMIAR_TESTU; i+=N_ZAPIS) {
