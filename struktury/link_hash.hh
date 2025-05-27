@@ -9,7 +9,7 @@
 //dodaje na koniec listy 
 class LinkStrategy : public HashMapStrategy {
   unsigned int (*hash_fun)(const wchar_t[VAL_SIZE], unsigned int n);
-  unsigned int zajete = 0;
+  unsigned int n_elementow = 0, zajete = 0, najwiekszy = 0;
   void rehash(){
     size_t rozmiar = dane.get_size();
     std::cout << "resize: " << rozmiar << std::endl;
@@ -46,15 +46,20 @@ class LinkStrategy : public HashMapStrategy {
     unsigned int klucz = hash_fun(key, dane.get_size());
     size_t rozmiar = dane.get_size();
     Pair p(val, key);
-    if(dane[klucz].get_size() == 0) zajete++;
+    n_elementow++;
+    // if(dane.get_size() == 0){
+    //   zajete++;
+    // }
     dane[klucz].push_back(p);
-    // std::cout << "zajete: " << zajete << " na: " << dane.get_size() << std::endl;
+    // std::cout << "n_elementow: " << n_elementow << " na: " << dane.get_size() << std::endl;
     // dane._show();
     // sprawdzenie rozmiaru
-    if((zajete / (float)rozmiar) >= 0.7){
+    if(n_elementow / size()*1.0 > 3.0){
       rehash();
     }
-
+    // if(zajete > size() * 0.7){
+    //   rehash();
+    // }
     // std::cout << "Wstawiam ziutka: " << klucz << std::endl;
     return true; //nie moze sie nie udac :)
   }
@@ -64,11 +69,18 @@ class LinkStrategy : public HashMapStrategy {
   bool remove(const wchar_t* klucz) { //trzeba zmniejszac zajetosc
     auto &lista = dane[hash_fun(klucz, dane.get_size())]; // Jakbyśmy zmienili co trzymamy w środku to sie dostosuje :) 
     size_t idx = search(klucz);
-    if(idx < lista.get_size()){
+    int rozmiar_listy = lista.get_size();
+    // if(rozmiar_listy > najwiekszy){
+    //   najwiekszy = rozmiar_listy;
+    //   std::cout << najwiekszy << std::endl;
+    // } 
+
+    if(idx < rozmiar_listy){
       lista.remove_at(idx);
-      if(lista.get_size() == 0){
-        zajete--;
-      }
+      n_elementow--;
+      // if(lista.get_size() == 0){
+      //   zajete--;
+      // }
       return true;
     }
     return false;

@@ -230,11 +230,51 @@ void testRemovePesymistycznyLinear(std::unique_ptr<LinearStrategy> hashmap, Dyna
     czasy[i]=0;
   }
   for(int proba=0;proba<ILOSC_PROBEK;proba++){
-    for(size_t i=0;i<rozmiar;i++){
-      int klucz = (hashmap->generate_key((*dane)[i].get_val()) - 1) % hashmap->size();
-      hashmap->dane[klucz].ustaw((*dane)[i].get_key(), (*dane)[i].get_val());
+    for(size_t i=rozmiar-1;i>4;i/=2){
+      int dodane = 0;
+      std::cout << "Ilosc danych(slotów): " << i << "(" << i/0.69 << ")" << std::endl;
+      auto hash_func = hashmap->get_hash_function();
+      auto dummyMap = std::make_unique<LinearStrategy>(hash_func, i/0.69);
+      int rozmiarDummy = dummyMap->size();
+      for(size_t j=0;j<i;j++){
+        int og_klucz = dummyMap->generate_key((*dane)[j].get_val());
+        int klucz = (og_klucz + rozmiarDummy + i) % rozmiarDummy;
+        // std::cout << "dupa1 " << og_klucz << " = " << klucz << " : " << rozmiarDummy << std::endl;
+        while (dummyMap->dane[klucz].zajete() && !dummyMap->dane[klucz].usuniete()) {
+          klucz = (klucz + 1) % rozmiarDummy;
+          // std::cout << (klucz+1)%rozmiarDummy << " -> " << klucz << " : " << rozmiarDummy << std::endl;
+        }
+        // std::cout << "dupa2" << std::endl;
+        dummyMap->dane[klucz].ustaw((*dane)[j].get_key(), (*dane)[j].get_val());
+        // std::cout << "dupa3 " << j << " : " << i << std::endl;
+      }
+      std::cout << "Dodano elementy" << std::endl;
+      for(size_t j=i-1;j>i/2;j--){
+        // auto imie = (*dane)[j].get_val();
+        // std::cout << imie << " - " << dummyMap->generate_key(imie) << " : " << dummyMap->size() << std::endl;
+        auto start = std::chrono::high_resolution_clock::now();
+        dummyMap->remove((*dane)[j].get_val());
+        auto end = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double, std::nano> czas = end - start;
+        czasy[j] += czas.count();
+      }
+      std::cout << "Usunieto elementy" << std::endl;
     }
-    // PESYMISTYCZNIE WĘDRUJE PO SWOJĄ PARĘ CAŁĄ LISTE
+  }
+  for(size_t i=0;i<rozmiar;i++){
+    czasy[i] /= ILOSC_PROBEK;
+  }
+}
+
+void testRemoveSredni(std::unique_ptr<HashMapStrategy> hashmap, DynamicArray<Pair> *dane, int seed, double* czasy){
+  const size_t rozmiar = dane->get_size();
+  for(size_t i=0;i<rozmiar;i++){
+    czasy[i]=0;
+  }
+  for(int proba=0;proba<ILOSC_PROBEK;proba++){
+    for(size_t i=0;i<rozmiar;i++){
+      hashmap->insert((*dane)[i]);
+    }
     for(size_t i=rozmiar-1;i>0;i--){
       auto start = std::chrono::high_resolution_clock::now();
       hashmap->remove((*dane)[i].get_val());
@@ -242,10 +282,12 @@ void testRemovePesymistycznyLinear(std::unique_ptr<LinearStrategy> hashmap, Dyna
       std::chrono::duration<double, std::nano> czas = end - start;
       czasy[i] += czas.count();
     }
+
   }
   for(size_t i=0;i<rozmiar;i++){
     czasy[i] /= ILOSC_PROBEK;
   }
 }
+
 
 #endif

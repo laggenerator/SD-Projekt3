@@ -59,20 +59,26 @@ std::ostream& operator<<(std::ostream& os, const Slot& p) {
 }
 
 class LinearStrategy : public HashMapStrategy {
-private:
+  private:
   unsigned int (*hash_fun)(const wchar_t[VAL_SIZE], unsigned int n);
   int zajete = 0;
   
   void rehash();
   
   public:
+  
+  
+
   DynamicArray<Slot> dane;
+
+  
   LinearStrategy(unsigned int (*h)(const wchar_t[VAL_SIZE], unsigned int n), int wielkosc = 2) {
     hash_fun = h;
     for(int i = 0; i < wielkosc; i++) {
       dane.push_back(Slot());
     }
   };
+  
   ~LinearStrategy() {}
   
   //wstawianie -- na polu zwroconym przez haszującą, albo na kolejnym (+1) jesli wolne, jesli nie to jeszcze dalej
@@ -93,6 +99,10 @@ private:
   int generate_key(const wchar_t* klucz) override;
   bool move(int skond, int dokond);
 
+  unsigned int (*get_hash_function() const)(const wchar_t[VAL_SIZE], unsigned int n) {
+      return hash_fun;
+  }
+  
   void _show() const override;
   size_t size() const override;
 };
@@ -195,10 +205,10 @@ size_t LinearStrategy::search(const wchar_t* klucz){
 
     if (slot.zajete() && !slot.usuniete()) {
       if (std::wcsncmp(klucz, slot.get_val(), VAL_SIZE) == 0) {
-        if(startowy -= indeks) {
+        // if(startowy -= indeks) {
           // std::cout << "Kolizja byla jakas smuteczek: " << startowy << " -> " << indeks << std::endl; 
-          throw std::out_of_range("elo");
-        }
+          // throw std::out_of_range("elo");
+        // }
 	      return indeks;
       }
     }
@@ -225,7 +235,6 @@ bool LinearStrategy::move(int skond, int dokond){
   }
   return false;
 }
-
 
 void LinearStrategy::_show() const { dane._show(); }
 

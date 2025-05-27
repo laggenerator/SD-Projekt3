@@ -221,11 +221,11 @@ int CuckooStrategy::get_val(const wchar_t* klucz) {
 //zgodnie z przyjetym zalozeniem, jesli rozmiar to np 200, to indeksy 0-99 sa w tab1, a 100-199 w tab2
 size_t CuckooStrategy::search(const wchar_t* klucz) {
   size_t index = hash_fun1(klucz, size()/2, seed[0]); //najpierw szukamy w 1
-  if(std::wcscmp(klucz, L"ROMAN") == 0) {
-     std::cout << "Szukam Romana!" << std::endl;
-     std::cout << "szukam, indeksy: " << hash_fun1(klucz, size()/2, seed[0]) << " " << hash_fun2(klucz, size()/2, seed[1]) << std::endl; 
-  }
-  //std::cout << "szukam, indeksy: " << hash_fun1(klucz, size()/2, seed[0]) << " " << hash_fun2(klucz, size()/2, seed[1]) << std::endl; 
+  // if(std::wcscmp(klucz, L"ROMAN") == 0) {
+  //    std::cout << "Szukam Romana!" << std::endl;
+  //    std::cout << "szukam, indeksy: " << hash_fun1(klucz, size()/2, seed[0]) << " " << hash_fun2(klucz, size()/2, seed[1]) << std::endl; 
+  // }
+  // std::cout << "szukam, indeksy: " << hash_fun1(klucz, size()/2, seed[0]) << " " << hash_fun2(klucz, size()/2, seed[1]) << std::endl; 
   if(tab1[index].zajete() && (wcscmp(tab1[index].get_val(), klucz) == 0))
     return index;
 
