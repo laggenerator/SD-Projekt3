@@ -71,24 +71,38 @@ DynamicArray<Pair> mergeTablic(DynamicArray<Pair>& arr1, DynamicArray<Pair>& arr
     }
   }
 
-  DynamicArray<Pair> merged;
-  for(auto& para : imiona){
-    merged.push_back(Pair(para.second, para.first.c_str()));
-  }
-  return merged;
+    std::vector<std::pair<int, std::wstring>> temp;
+    for (const auto& para : imiona) {
+        temp.emplace_back(para.second, para.first);
+    }
+
+    std::sort(temp.begin(), temp.end(), [](const auto& a, const auto& b) {
+        return a.first > b.first;
+    });
+
+    DynamicArray<Pair> merged;
+    for (const auto& entry : temp) {
+        merged.push_back(Pair(entry.first, entry.second.c_str()));
+    }
+
+    return merged;
 }
 
 #define N_ZAPIS 500
-#define ROZMIAR_TESTU 65924
+#define ROZMIAR_TESTU /*65924*/ 45000
 
-void zapisz(const char* nazwa_pliku, double dane[3][ROZMIAR_TESTU]) {
+void zapisz(const char* nazwa_pliku, double dane[3][ROZMIAR_TESTU], bool testfunkcji = false) {
   //zapis do pliku
   std::ofstream plik;
   plik.open(nazwa_pliku, std::ios::out | std::ios::trunc);
   if (!plik.is_open()) {
     std::cerr << "Nie można otworzyć pliku: " << nazwa_pliku << std::endl;
   }
-  plik << "Rozmiar;Chaining;Linear;Cuckoo" << std::endl;
+  if(!testfunkcji){
+    plik << "Rozmiar;Chaining;Linear;Cuckoo" << std::endl;
+  } else {
+    plik << "Rozmiar;FNV1;DJB2;Murmur3" << std::endl;
+  }
   //ogolnie pierwsza kolumna to po prostu i, ale np w usuwaniu to musi byc i+1, w insert juz i
   for(size_t i = 1; i < ROZMIAR_TESTU; i+=N_ZAPIS) {
     plik << i;

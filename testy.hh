@@ -38,7 +38,8 @@ void testInsertOptymistycznyChaining(std::unique_ptr<LinkStrategy> hashmap, Dyna
   }
 }
 void testInsertSredni(std::unique_ptr<HashMapStrategy> hashmap, DynamicArray<Pair> *dane, int seed, double* czasy){
-  const size_t rozmiar = dane->get_size();
+  // const size_t rozmiar = dane->get_size();
+  const size_t rozmiar = 45000;
   for(size_t i=0;i<rozmiar;i++){
     czasy[i]=0;
   }
@@ -267,7 +268,8 @@ void testRemovePesymistycznyLinear(std::unique_ptr<LinearStrategy> hashmap, Dyna
 }
 
 void testRemoveSredni(std::unique_ptr<HashMapStrategy> hashmap, DynamicArray<Pair> *dane, int seed, double* czasy){
-  const size_t rozmiar = dane->get_size();
+  // const size_t rozmiar = dane->get_size();
+  const size_t rozmiar = 45000;
   for(size_t i=0;i<rozmiar;i++){
     czasy[i]=0;
   }

@@ -38,7 +38,7 @@ public:
 void CuckooStrategy::rehash(bool zwiekszaj) {
   std::random_device rd;
   std::default_random_engine generator(rd());
-  std::uniform_int_distribution<int> distribution(0,INT_MAX);
+  std::uniform_int_distribution<int> distribution(0x5FFFFFFF,0xFFFFFFFF);
   //mam nadzieje, ze operatory = i konstruktory dobrze dzialaja
   size_t rozmiar = (zwiekszaj ? size() : size()/2);
   //tablice nowe, ktore (byc moze) dostapia zaszczytu zostania nowym slownikiem
@@ -128,10 +128,14 @@ bool CuckooStrategy::try_inserting(DynamicArray<Slot>* a1, DynamicArray<Slot>* a
 //jesli podadza nieparzysty rozmiar to zwiekszamy o jeden
 CuckooStrategy::CuckooStrategy(unsigned int (*h1)(const wchar_t[VAL_SIZE], unsigned int n, unsigned int s), unsigned int (*h2)(const wchar_t[VAL_SIZE], unsigned int n, unsigned int s), size_t wielkosc) : hash_fun1(h1), hash_fun2(h2) {
   if(wielkosc%2) wielkosc++;
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<uint32_t> dist(0, 0xFFFFFFFF);
   zajete = 0;
   tab1.resize(wielkosc/2);
   tab2.resize(wielkosc/2);
-  seed[0] = 0; seed[1] = 0;
+  seed[0] = dist(gen); seed[1] = dist(gen);
+  // seed[0] = 0; seed[1] = 0;
   for(size_t i = 0; i < wielkosc/2; ++i) {
     tab1.push_back(Slot());
     tab2.push_back(Slot());

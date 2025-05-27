@@ -64,49 +64,74 @@ int main(){
   // KOD Z TESTAMI
  
   std::cout << arraysize << std::endl;
-  double czasyOPT[3][65924]; //Chaining, Linear, Cuckoo
-  double czasyAVG[3][65924]; //Chaining, Linear, Cuckoo
-  double czasyPES[3][65924]; //Chaining, Linear, Cuckoo
+  double czasyOPT[3][45000]; //Chaining, Linear, Cuckoo
+  double czasyAVG[3][45000]; //Chaining, Linear, Cuckoo
+  double czasyPES[3][45000]; //Chaining, Linear, Cuckoo
   
-  std::cout << "Optymistyczny insert chaining" << std::endl;
-  testInsertOptymistycznyChaining(std::make_unique<LinkStrategy>(fnv_1, arraysize/0.69), &ludzie, 2137, czasyOPT[0]); // Optymistycznie O(1) - Wkłada tak czy inaczej do tego kubełka po prostu na tail
-  std::cout << "Optymistyczny insert linear" << std::endl;
-  testInsertOptymistycznyLinear(std::make_unique<LinearStrategy>(fnv_1, arraysize/0.69), &ludzie, 2137, czasyOPT[1]); // Optymistycznie O(1)
+  // std::cout << "Optymistyczny insert chaining" << std::endl;
+  // testInsertOptymistycznyChaining(std::make_unique<LinkStrategy>(fnv_1, arraysize/0.69), &ludzie, 2137, czasyOPT[0]); // Optymistycznie O(1) - Wkłada tak czy inaczej do tego kubełka po prostu na tail
+  // std::cout << "Optymistyczny insert linear" << std::endl;
+  // testInsertOptymistycznyLinear(std::make_unique<LinearStrategy>(fnv_1, arraysize/0.69), &ludzie, 2137, czasyOPT[1]); // Optymistycznie O(1)
 
-  std::cout << "Pesymistyczny insert chaining" << std::endl;
-  testInsertPesymistycznyChaining(std::make_unique<LinkStrategy>(fnv_1), &ludzie, 2137, czasyPES[0]); // Pesymistycznie O(1) -- to samo co optymistycznie
-  std::cout << "Pesymistyczny insert linear" << std::endl;
-  testInsertPesymistycznyLinear(std::make_unique<LinearStrategy>(fnv_1), &ludzie, 2137, czasyPES[1]); // Pesymistycznie O(n) -- n elementów przesunięte od klucza
+  // std::cout << "Pesymistyczny insert chaining" << std::endl;
+  // testInsertPesymistycznyChaining(std::make_unique<LinkStrategy>(fnv_1), &ludzie, 2137, czasyPES[0]); // Pesymistycznie O(1) -- to samo co optymistycznie
+  // std::cout << "Pesymistyczny insert linear" << std::endl;
+  // testInsertPesymistycznyLinear(std::make_unique<LinearStrategy>(fnv_1), &ludzie, 2137, czasyPES[1]); // Pesymistycznie O(n) -- n elementów przesunięte od klucza
   
-  std::cout << "Sredni insert chaining" << std::endl;
-  testInsertSredni(std::make_unique<LinkStrategy>(fnv_1), &ludzie, 2137, czasyAVG[0]); // Średni to po prostu wkładanie danych i co wyjdzie to wyjdzie
-  std::cout << "Sredni insert linear" << std::endl;
-  testInsertSredni(std::make_unique<LinearStrategy>(fnv_1), &ludzie, 2137, czasyAVG[1]); // Średni to po prostu wkładanie danych i co wyjdzie to wyjdzie
-  std::cout << "Sredni insert cuckoo" << std::endl;
-  testInsertSredni(std::make_unique<CuckooStrategy>(fnv_1_seed, djb2_seed, 200000), &ludzie, 2137, czasyAVG[2]); // Średni to po prostu wkładanie danych i co wyjdzie to wyjdzie
+  // std::cout << "Sredni insert chaining" << std::endl;
+  // testInsertSredni(std::make_unique<LinkStrategy>(fnv_1), &ludzie, 2137, czasyAVG[0]); // Średni to po prostu wkładanie danych i co wyjdzie to wyjdzie
+  // std::cout << "Sredni insert linear" << std::endl;
+  // testInsertSredni(std::make_unique<LinearStrategy>(fnv_1), &ludzie, 2137, czasyAVG[1]); // Średni to po prostu wkładanie danych i co wyjdzie to wyjdzie
+  // std::cout << "Sredni insert cuckoo" << std::endl;
+  // testInsertSredni(std::make_unique<CuckooStrategy>(fnv_1_seed, djb2_seed, 200000), &ludzie, 2137, czasyAVG[2]); // Średni to po prostu wkładanie danych i co wyjdzie to wyjdzie
+  // zapisz("insertOPT.csv", czasyOPT);
+  // zapisz("insertPES.csv", czasyPES);
+  // zapisz("insertAVG.csv", czasyAVG);
 
-  zapisz("insertOPT.csv", czasyOPT);
-  zapisz("insertPES.csv", czasyPES);
-  zapisz("insertAVG.csv", czasyAVG);
+  // std::cout << "Optymistyczny remove chaining" << std::endl;
+  // testRemoveOptymistycznyChaining(std::make_unique<LinkStrategy>(fnv_1, arraysize*2), &ludzie, 2137, czasyOPT[0]); // Optymistycznie O(1) - Wykłada z pierwszej pozycji
+  // std::cout << "Optymistyczny remove linear" << std::endl;
+  // testRemoveOptymistycznyLinear(std::make_unique<LinearStrategy>(fnv_1, arraysize*2), &ludzie, 2137, czasyOPT[1]); // Optymistycznie O(1) - Wykłada ze swojego kubełka
+  // std::cout << "Pesymistyczny remove chaining" << std::endl;
+  // testRemovePesymistycznyChaining(std::make_unique<LinkStrategy>(fnv_1), &ludzie, 2137, czasyPES[0]); // Pesymistycznie O(n w kubelku) w praktyce O(1) -- Wyklada ze srodka kubelka
+  // std::cout << "Pesymistyczny remove linear" << std::endl;
+  // testRemovePesymistycznyLinear(std::make_unique<LinearStrategy>(fnv_1), &ludzie, 2137, czasyPES[1]); // Pesymistycznie O(n) -- Jedzie n elementów bo wartosc jest na (klucz - 1) % pojemnosc
 
+  // std::cout << "Sredni remove chaining" << std::endl;
+  // testRemoveSredni(std::make_unique<LinkStrategy>(fnv_1), &ludzie, 2137, czasyAVG[0]);
+  // std::cout << "Sredni remove linear" << std::endl;
+  // testRemoveSredni(std::make_unique<LinearStrategy>(fnv_1), &ludzie, 2137, czasyAVG[1]);
+  // std::cout << "Sredni remove cuckoo" << std::endl;
+  // testRemoveSredni(std::make_unique<CuckooStrategy>(fnv_1_seed, djb2_seed, 200000), &ludzie, 2137, czasyAVG[2]);
 
-  std::cout << "Optymistyczny remove chaining" << std::endl;
-  testRemoveOptymistycznyChaining(std::make_unique<LinkStrategy>(fnv_1, arraysize*2), &ludzie, 2137, czasyOPT[0]); // Optymistycznie O(1) - Wykłada z pierwszej pozycji
-  std::cout << "Optymistyczny remove linear" << std::endl;
-  testRemoveOptymistycznyLinear(std::make_unique<LinearStrategy>(fnv_1, arraysize*2), &ludzie, 2137, czasyOPT[1]); // Optymistycznie O(1) - Wykłada ze swojego kubełka
-  std::cout << "Pesymistyczny remove chaining" << std::endl;
-  testRemovePesymistycznyChaining(std::make_unique<LinkStrategy>(fnv_1), &ludzie, 2137, czasyPES[0]); // Pesymistycznie O(n w kubelku) w praktyce O(1) -- Wyklada ze srodka kubelka
-  std::cout << "Pesymistyczny remove linear" << std::endl;
-  testRemovePesymistycznyLinear(std::make_unique<LinearStrategy>(fnv_1), &ludzie, 2137, czasyPES[1]); // Pesymistycznie O(n) -- Jedzie n elementów bo wartosc jest na (klucz - 1) % pojemnosc
+  // zapisz("removeOPT.csv", czasyOPT);
+  // zapisz("removePES.csv", czasyPES);
+  // zapisz("removeAVG.csv", czasyAVG);
 
-  std::cout << "Sredni remove chaining" << std::endl;
+  // TESTY PORÓWNANIA FUNKCJI
+  std::cout << "Porownanie funkcji haszujacych insert cuckoo" << std::endl;
+  testInsertSredni(std::make_unique<CuckooStrategy>(fnv_1_seed, fnv_1_seed, 1000000), &ludzie, 2137, czasyAVG[0]);
+  testInsertSredni(std::make_unique<CuckooStrategy>(djb2_seed, djb2_seed, 1000000), &ludzie, 2137, czasyAVG[1]);
+  testInsertSredni(std::make_unique<CuckooStrategy>(murmur3_seed, murmur3_seed, 1000000), &ludzie, 2137, czasyAVG[2]);
+
+  zapisz("CuckooInsert.csv", czasyAVG, true);
+  std::cout << "Porownanie funkcji haszujacych remove cuckoo" << std::endl;
+  testRemoveSredni(std::make_unique<CuckooStrategy>(fnv_1_seed, fnv_1_seed, 1000000), &ludzie, 2137, czasyAVG[0]);
+  testRemoveSredni(std::make_unique<CuckooStrategy>(djb2_seed, djb2_seed, 1000000), &ludzie, 2137, czasyAVG[1]);
+  testRemoveSredni(std::make_unique<CuckooStrategy>(murmur3_seed, murmur3_seed, 1000000), &ludzie, 2137, czasyAVG[2]);
+
+  zapisz("CuckooRemove.csv", czasyAVG, true);
+  
+  std::cout << "Porownanie funkcji haszujacych insert chaining" << std::endl;
+  testInsertSredni(std::make_unique<LinkStrategy>(fnv_1), &ludzie, 2137, czasyAVG[0]);
+  testInsertSredni(std::make_unique<LinkStrategy>(djb2), &ludzie, 2137, czasyAVG[1]);
+  testInsertSredni(std::make_unique<LinkStrategy>(murmur3), &ludzie, 2137, czasyAVG[2]);
+
+  zapisz("ChainingInsert.csv", czasyAVG, true);
+  std::cout << "Porownanie funkcji haszujacych remove chaining" << std::endl;
   testRemoveSredni(std::make_unique<LinkStrategy>(fnv_1), &ludzie, 2137, czasyAVG[0]);
-  std::cout << "Sredni remove linear" << std::endl;
-  testRemoveSredni(std::make_unique<LinearStrategy>(fnv_1), &ludzie, 2137, czasyAVG[1]);
-  std::cout << "Sredni remove cuckoo" << std::endl;
-  testRemoveSredni(std::make_unique<CuckooStrategy>(fnv_1_seed, djb2_seed, 200000), &ludzie, 2137, czasyAVG[2]);
+  testRemoveSredni(std::make_unique<LinkStrategy>(djb2), &ludzie, 2137, czasyAVG[1]);
+  testRemoveSredni(std::make_unique<LinkStrategy>(murmur3), &ludzie, 2137, czasyAVG[2]);
 
-  zapisz("removeOPT.csv", czasyOPT);
-  zapisz("removePES.csv", czasyPES);
-  zapisz("removeAVG.csv", czasyAVG);
+  zapisz("ChainingRemove.csv", czasyAVG, true);
 }

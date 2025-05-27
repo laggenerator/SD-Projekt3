@@ -32,6 +32,15 @@ unsigned int modulo_hash(const wchar_t* tab, unsigned int n){
   }
   return hash % n;
 }
+unsigned int modulo_hash_seed(const wchar_t* tab, unsigned int n, unsigned int seed ){
+  const unsigned int p = (n > 50 ? n/13 : n); // Internet jej lubi używać nie wiem czemu
+  unsigned int hash = seed;
+  for(int i=0;i<VAL_SIZE;i++){
+    if(tab[i] == '\0') break;
+    hash = (hash + (tab[i] % p));
+  }
+  return hash % n;
+}
 
 unsigned int jakis_hash(const wchar_t tab[VAL_SIZE], unsigned int n){
   int dlugosc=0;
@@ -68,5 +77,40 @@ unsigned int djb2_seed(const wchar_t* str, unsigned int modulo, unsigned int see
 }
 unsigned int djb2(const wchar_t* str, unsigned int modulo) {
   return djb2_seed(str, modulo, 5381);
+}
+// https://www.youtube.com/watch?v=cwJKjuyLv80
+unsigned int murmur3_seed(const wchar_t* klucz, unsigned int modulo, unsigned int seed = 0) {
+  const unsigned int* data = reinterpret_cast<const unsigned int*>(klucz);
+  unsigned int h = seed;
+  const unsigned int c1 = 0xcc9e2d51;
+  const unsigned int c2 = 0x1b873593;
+  unsigned int len = 0;
+  
+  while (klucz[len] != L'\0') len++;
+  
+  for (unsigned int i = 0; i < len; i++) {
+    unsigned int k = data[i];
+    
+    k *= c1;
+    k = (k << 15) | (k >> 17);  
+    k *= c2;
+    
+    h ^= k;
+    h = (h << 13) | (h >> 19);
+    h = h * 5 + 0xe6546b64;
+  }
+  
+  
+  h ^= len * 4;
+  h ^= h >> 16;
+  h *= 0x85ebca6b;
+  h ^= h >> 13;
+  h *= 0xc2b2ae35;
+  h ^= h >> 16;
+  
+  return h % modulo;
+}
+unsigned int murmur3(const wchar_t* klucz, unsigned int modulo){
+  return murmur3_seed(klucz, modulo);
 }
 #endif
