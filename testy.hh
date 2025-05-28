@@ -175,8 +175,7 @@ void testRemovePesymistycznyChaining(std::unique_ptr<LinkStrategy> hashmap, Dyna
       int klucz = hashmap->generate_key((*dane)[i].get_val());
       int n = hashmap->dane[klucz].find_index((*dane)[i]);
       Pair para = hashmap->dane[klucz].remove_at(n);
-      int srodek = hashmap->dane[klucz].get_size() / 2;
-      hashmap->dane[klucz].push_at(srodek, para);
+      hashmap->dane[klucz].push_back(para);
 
       auto start = std::chrono::high_resolution_clock::now();
       hashmap->remove((*dane)[i].get_val());
