@@ -185,7 +185,7 @@ void testRemoveOptymistycznyChaining(std::unique_ptr<LinkStrategy> hashmap, Dyna
 }
 
 
-void testInsertOptymistycznyCuckoo(std::unique_ptr<CuckooStrategy> hashmap, DynamicArray<Pair> *dane, int seed, double* czasy){
+void testRemoveOptymistycznyCuckoo(std::unique_ptr<CuckooStrategy> hashmap, DynamicArray<Pair> *dane, int seed, double* czasy){
   const size_t rozmiar = dane->get_size();
   for(size_t i=0;i<rozmiar;i++){
     czasy[i]=0;

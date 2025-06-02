@@ -108,6 +108,9 @@ int main(){
   testRemoveOptymistycznyChaining(std::make_unique<LinkStrategy>(fnv_1, arraysize*2), &dane, 2137, czasyOPT[0]); // Optymistycznie O(1) - Wykłada z pierwszej pozycji
   std::cout << "Optymistyczny remove linear" << std::endl;
   testRemoveOptymistycznyLinear(std::make_unique<LinearStrategy>(fnv_1, arraysize*2), &dane, 2137, czasyOPT[1]); // Optymistycznie O(1) - Wykłada ze swojego kubełka
+  std::cout << "Optymistyczny remove linear" << std::endl;
+  testRemoveOptymistycznyCuckoo(std::make_unique<CuckooStrategy>(fnv_1_seed, djb2_seed, 2000000), &dane, 2137, czasyOPT[2]); // Optymistycznie O(1) - Wykłada ze swojego kubełka
+  
   std::cout << "Pesymistyczny remove chaining" << std::endl;
   testRemovePesymistycznyChaining(std::make_unique<LinkStrategy>(fnv_1), &dane, 2137, czasyPES[0]); // Pesymistycznie O(n w kubelku) w praktyce O(1) -- Wyklada ze srodka kubelka
   std::cout << "Pesymistyczny remove linear" << std::endl;
