@@ -16,6 +16,7 @@ PESYMISTYCZNY:
 #include <memory>
 #include "wczytaj.hh"
 #include "./struktury/hash_table.hh"
+#include "struktury/cuckoo_hash.hh"
 
 #define ILOSC_PROBEK 1
 
@@ -171,6 +172,34 @@ void testRemoveOptymistycznyChaining(std::unique_ptr<LinkStrategy> hashmap, Dyna
       Pair para = hashmap->dane[klucz].remove_at(n);
       hashmap->dane[klucz].push_front(para);
 
+      auto start = std::chrono::high_resolution_clock::now();
+      hashmap->remove((*dane)[i].get_val());
+      auto end = std::chrono::high_resolution_clock::now();
+      std::chrono::duration<double, std::nano> czas = end - start;
+      czasy[i] += czas.count();
+    }
+  }
+  for(size_t i=0;i<rozmiar;i++){
+    czasy[i] /= ILOSC_PROBEK;
+  }
+}
+
+
+void testInsertOptymistycznyCuckoo(std::unique_ptr<CuckooStrategy> hashmap, DynamicArray<Pair> *dane, int seed, double* czasy){
+  const size_t rozmiar = dane->get_size();
+  for(size_t i=0;i<rozmiar;i++){
+    czasy[i]=0;
+  }
+  for(int proba=0;proba<ILOSC_PROBEK;proba++){
+    for(size_t i=0;i<rozmiar;i++){
+      // std::cout << "elo " << i  << std::endl;
+      hashmap->insert((*dane)[i]);
+    }
+    for(size_t i=0;i<rozmiar;i++){
+      int klucz1 = hashmap->generate_keyy((*dane)[i].get_val(), 1);
+      int klucz2 = hashmap->generate_keyy((*dane)[i].get_val(), 2);
+      Slot wstawiany(Pair((*dane)[i].get_key(), (*dane)[i].get_val()), 1, 0);
+      hashmap->tab1[klucz1] = wstawiany;
       auto start = std::chrono::high_resolution_clock::now();
       hashmap->remove((*dane)[i].get_val());
       auto end = std::chrono::high_resolution_clock::now();
