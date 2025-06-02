@@ -85,6 +85,8 @@ int main(){
   testInsertOptymistycznyChaining(std::make_unique<LinkStrategy>(fnv_1, arraysize/0.69), &dane, 2137, czasyOPT[0]); // Optymistycznie O(1) - Wkłada tak czy inaczej do tego kubełka po prostu na tail
   std::cout << "Optymistyczny insert linear" << std::endl;
   testInsertOptymistycznyLinear(std::make_unique<LinearStrategy>(fnv_1, arraysize/0.69), &dane, 2137, czasyOPT[1]); // Optymistycznie O(1)
+  std::cout << "Optymistyczny insert cuckoo" << std::endl;
+  testInsertOptymistycznyCuckoo(std::make_unique<CuckooStrategy>(fnv_1_seed, djb2_seed, 200000), &dane, 2137, czasyOPT[1]); // Optymistycznie O(1)
   zapisz("insertOPT.csv", czasyOPT);
   
   std::cout << "Pesymistyczny insert chaining" << std::endl;

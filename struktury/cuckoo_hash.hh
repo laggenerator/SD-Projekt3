@@ -11,8 +11,7 @@
 //tabeli, reszta w pierwszej
 class CuckooStrategy : public HashMapStrategy {
 private:
-  DynamicArray<Slot> tab1;
-  DynamicArray<Slot> tab2;
+
   unsigned int (*hash_fun1)(const wchar_t[VAL_SIZE], unsigned int, unsigned int);
   unsigned int (*hash_fun2)(const wchar_t[VAL_SIZE], unsigned int, unsigned int); 
   size_t zajete;
@@ -29,10 +28,14 @@ public:
   bool remove(const wchar_t* klucz) override;
   int get_val(const wchar_t* klucz) override;
   size_t search(const wchar_t* klucz) override;
-  int generate_key(const wchar_t* klucz)  override; //ale ktory zwrocic???, zwraca pierwszy
+  int generate_keyy(const wchar_t* klucz, int func); //ale ktory zwrocic???, zwraca pierwszy
+  int generate_key(const wchar_t* klucz) override;
   
   void _show() const override;
-  size_t size() const override;
+  size_t size() const override; 
+  
+  DynamicArray<Slot> tab1;
+  DynamicArray<Slot> tab2;
 };
 
 void CuckooStrategy::rehash(bool zwiekszaj) {
@@ -238,6 +241,11 @@ size_t CuckooStrategy::search(const wchar_t* klucz) {
     return tab1.get_size() + index;
 
   throw std::out_of_range("Nie ma takiego klucza w zbiorze!");
+}
+
+int CuckooStrategy::generate_keyy(const wchar_t* klucz, int func = 1) {
+  if(func == 2) return hash_fun2(klucz, size()/2, seed[1]);
+  else return hash_fun1(klucz, size()/2, seed[0]);
 }
 
 int CuckooStrategy::generate_key(const wchar_t* klucz) {
